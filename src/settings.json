@@ -85,12 +85,6 @@
           "desc": "Download files from Mediafire",
           "path": "/download/mediafire?url=",
           "innerDesc": "📦 Download files from Mediafire\n\nUsage: ?url=MEDIAFIRE_URL\nDownload: &download=true"
-        },
-        {
-          "name": "Pinterest Downloader",
-          "desc": "Search and download images/videos from Pinterest",
-          "path": "/pinterest?query=",
-          "innerDesc": "🎨 Search or download from Pinterest\n\nSearch: ?query=SEARCH_TERM&limit=20\nDownload: ?url=PINTEREST_PIN_URL\nDirect download: &download=true"
         }
       ]
     },
