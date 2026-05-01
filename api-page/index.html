@@ -6,7 +6,8 @@
     <link rel="icon" href="/src/icon.png" type="image/png">
     <title id="pageTitle">Api Alya</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -15,9 +16,9 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            color: #2c2c2c;
-            background: #ffffff;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             overflow-x: hidden;
         }
 
@@ -32,7 +33,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #ffffff;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             z-index: 10000;
             display: flex;
             justify-content: center;
@@ -48,8 +49,8 @@
         .spinner-border {
             width: 3rem;
             height: 3rem;
-            border: 3px solid #f0f0f0;
-            border-top-color: #2c2c2c;
+            border: 3px solid #e2e8f0;
+            border-top-color: #e11d48;
         }
 
         /* Music Player Flotante */
@@ -58,13 +59,13 @@
             bottom: 20px;
             right: 20px;
             width: 320px;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 15px;
+            background: rgba(15,23,42,0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
             padding: 15px;
             z-index: 10000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
             transition: all 0.3s ease;
         }
 
@@ -93,12 +94,13 @@
         }
 
         .music-title {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             flex: 1;
+            opacity: 0.7;
         }
 
         .music-toggle-min {
@@ -108,6 +110,7 @@
             cursor: pointer;
             font-size: 16px;
             padding: 0 5px;
+            opacity: 0.7;
         }
 
         .music-info {
@@ -117,18 +120,18 @@
 
         .song-name {
             color: white;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             margin-bottom: 5px;
         }
 
         .artist-name {
-            color: rgba(255,255,255,0.7);
-            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            font-size: 10px;
         }
 
         .progress-container {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
             border-radius: 10px;
             height: 4px;
             margin: 10px 0;
@@ -136,7 +139,7 @@
         }
 
         .progress-bar {
-            background: #e74c3c;
+            background: #e11d48;
             border-radius: 10px;
             height: 100%;
             width: 0%;
@@ -147,7 +150,7 @@
         .time-info {
             display: flex;
             justify-content: space-between;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.5);
             font-size: 10px;
             margin-bottom: 10px;
         }
@@ -179,13 +182,13 @@
         }
 
         .control-btn.play-btn {
-            background: #e74c3c;
+            background: #e11d48;
             width: 45px;
             height: 45px;
         }
 
         .control-btn.play-btn:hover {
-            background: #c0392b;
+            background: #be123c;
         }
 
         /* Top Bar */
@@ -195,18 +198,19 @@
             left: 0;
             right: 0;
             height: 60px;
-            background: #ffffff;
-            border-bottom: 1px solid #e5e5e5;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 24px;
             z-index: 1000;
             transition: all 0.3s ease;
         }
 
         .top-bar.scrolled {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
 
         .top-bar-left {
@@ -228,19 +232,20 @@
             gap: 5px;
             padding: 0;
             transition: all 0.3s ease;
+            border-radius: 8px;
         }
 
         .menu-toggle:hover {
-            background: #f5f5f5;
-            border-radius: 5px;
+            background: #f1f5f9;
         }
 
         .menu-toggle span {
             display: block;
             width: 22px;
             height: 2px;
-            background: #2c2c2c;
+            background: #1e293b;
             transition: all 0.3s ease;
+            border-radius: 2px;
         }
 
         .menu-toggle.active span:nth-child(1) {
@@ -257,8 +262,11 @@
 
         .api-name {
             font-size: 18px;
-            font-weight: 600;
-            color: #2c2c2c;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e11d48, #f97316);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .top-bar-right {
@@ -274,7 +282,7 @@
         }
 
         .top-link {
-            color: #2c2c2c;
+            color: #475569;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
@@ -285,7 +293,7 @@
         }
 
         .top-link:hover {
-            color: #666;
+            color: #e11d48;
         }
 
         .link-icon {
@@ -300,8 +308,9 @@
             left: -280px;
             width: 280px;
             height: calc(100vh - 60px);
-            background: #ffffff;
-            border-right: 1px solid #e5e5e5;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid #e2e8f0;
             overflow-y: auto;
             transition: left 0.3s ease;
             z-index: 999;
@@ -334,8 +343,8 @@
         }
 
         .sidebar-item {
-            padding: 12px 20px;
-            color: #2c2c2c;
+            padding: 12px 24px;
+            color: #334155;
             cursor: pointer;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
@@ -344,19 +353,21 @@
         }
 
         .sidebar-item:hover {
-            background: #f5f5f5;
+            background: #f8fafc;
+            color: #e11d48;
         }
 
         .sidebar-item.active {
-            background: #f5f5f5;
-            border-left-color: #2c2c2c;
+            background: #fef2f2;
+            border-left-color: #e11d48;
+            color: #e11d48;
         }
 
         .sidebar-category {
-            padding: 20px 20px 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #999;
+            padding: 20px 24px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -364,8 +375,8 @@
         /* Main Content */
         .main-content {
             margin-top: 60px;
-            padding: 40px 20px;
-            max-width: 1200px;
+            padding: 40px 24px;
+            max-width: 1300px;
             margin-left: auto;
             margin-right: auto;
             min-height: calc(100vh - 120px);
@@ -374,130 +385,140 @@
         /* Home Page */
         .home-banner {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             animation: fadeIn 0.6s ease;
         }
 
         .home-banner img {
             max-width: 100%;
             height: auto;
-            border-radius: 10px;
+            border-radius: 24px;
             margin-bottom: 30px;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.1);
         }
 
         .home-title {
-            font-size: 42px;
-            font-weight: 600;
+            font-size: 48px;
+            font-weight: 700;
             margin-bottom: 10px;
-            color: #2c2c2c;
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .home-version {
             display: inline-block;
-            background: #2c2c2c;
+            background: #e11d48;
             color: #ffffff;
             padding: 6px 16px;
-            border-radius: 20px;
+            border-radius: 40px;
             font-size: 13px;
             font-weight: 500;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .home-description {
             font-size: 18px;
-            color: #666;
+            color: #64748b;
             margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Status Page */
         .status-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            gap: 24px;
             margin-top: 30px;
             animation: fadeIn 0.6s ease;
         }
 
         .status-card {
-            background: #ffffff;
-            border: 1px solid #e5e5e5;
-            border-radius: 10px;
-            padding: 20px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 24px;
             transition: all 0.3s ease;
         }
 
         .status-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            border-color: #e11d48;
         }
 
         .status-card-title {
             font-size: 12px;
             font-weight: 600;
-            color: #999;
+            color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .status-card-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: #2c2c2c;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
         }
 
         .status-card-small {
-            font-size: 14px;
-            color: #666;
+            font-size: 13px;
+            color: #64748b;
             margin-top: 5px;
         }
 
         /* Endpoints Page */
         .search-box {
-            margin-bottom: 30px;
+            margin-bottom: 32px;
             animation: fadeIn 0.6s ease;
         }
 
         .search-input {
             width: 100%;
             padding: 14px 20px;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 60px;
             font-size: 15px;
             transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: white;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: #2c2c2c;
-            box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+            border-color: #e11d48;
+            box-shadow: 0 0 0 3px rgba(225,29,72,0.1);
         }
 
         .category-section {
-            margin-bottom: 40px;
+            margin-bottom: 48px;
             animation: fadeIn 0.6s ease;
         }
 
         .category-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: #2c2c2c;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #2c2c2c;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         .endpoints-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
         }
 
         .endpoint-card {
-            background: #ffffff;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
             padding: 20px;
             display: flex;
             justify-content: space-between;
@@ -506,8 +527,9 @@
         }
 
         .endpoint-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
             transform: translateY(-2px);
+            border-color: #e11d48;
         }
 
         .endpoint-info {
@@ -517,27 +539,27 @@
 
         .endpoint-name {
             font-size: 16px;
-            font-weight: 600;
-            color: #2c2c2c;
-            margin-bottom: 4px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 6px;
         }
 
         .endpoint-desc {
-            font-size: 13px;
-            color: #999;
+            font-size: 12px;
+            color: #64748b;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
         .endpoint-btn {
-            background: #2c2c2c;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             color: #ffffff;
             border: none;
             padding: 8px 20px;
-            border-radius: 6px;
+            border-radius: 40px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
@@ -545,31 +567,33 @@
         }
 
         .endpoint-btn:hover {
-            background: #1a1a1a;
-            transform: scale(1.05);
+            background: linear-gradient(135deg, #e11d48, #be123c);
+            transform: scale(1.02);
         }
 
         /* Modal */
         .modal-content {
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2);
+            overflow: hidden;
         }
 
         .modal-header {
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid #e2e8f0;
             padding: 20px 24px;
+            background: white;
         }
 
         .modal-title {
             font-size: 20px;
-            font-weight: 600;
-            color: #2c2c2c;
+            font-weight: 700;
+            color: #1e293b;
         }
 
         .modal-desc {
             font-size: 13px;
-            color: #999;
+            color: #64748b;
             margin-top: 4px;
         }
 
@@ -578,36 +602,38 @@
         }
 
         .modal-footer {
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid #e2e8f0;
             padding: 16px 24px;
+            background: #f8fafc;
         }
 
         .api-endpoint-box {
-            background: #f8f9fa;
+            background: #f8fafc;
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 12px;
             font-family: monospace;
             font-size: 13px;
-            color: #2c2c2c;
+            color: #e11d48;
             word-break: break-all;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
         }
 
         .param-input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #e5e5e5;
-            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 14px;
             margin-bottom: 12px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
         }
 
         .param-input:focus {
             outline: none;
-            border-color: #2c2c2c;
-            box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+            border-color: #e11d48;
+            box-shadow: 0 0 0 3px rgba(225,29,72,0.1);
         }
 
         .param-input.is-invalid {
@@ -616,25 +642,25 @@
 
         .inner-desc {
             font-size: 12px;
-            color: #999;
+            color: #64748b;
             margin-top: 8px;
             line-height: 1.5;
         }
 
         .submit-btn {
-            background: #2c2c2c;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             color: #ffffff;
             border: none;
             padding: 10px 24px;
-            border-radius: 6px;
+            border-radius: 40px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .submit-btn:hover {
-            background: #1a1a1a;
+            background: linear-gradient(135deg, #e11d48, #be123c);
         }
 
         .submit-btn:disabled {
@@ -643,17 +669,17 @@
         }
 
         .response-box {
-            background: #f8f9fa;
+            background: #1e293b;
             padding: 16px;
-            border-radius: 6px;
+            border-radius: 12px;
             font-family: monospace;
-            font-size: 13px;
-            color: #2c2c2c;
+            font-size: 12px;
+            color: #e2e8f0;
             white-space: pre-wrap;
             word-wrap: break-word;
             max-height: 400px;
             overflow-y: auto;
-            margin-top: 16px;
+            margin-top: 20px;
         }
 
         .response-image {
@@ -667,16 +693,17 @@
         .footer {
             text-align: center;
             padding: 30px 20px;
-            color: #999;
+            color: #94a3b8;
             font-size: 13px;
-            border-top: 1px solid #e5e5e5;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 40px;
         }
 
         /* Animations */
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -695,7 +722,7 @@
             }
 
             .home-description {
-                font-size: 16px;
+                font-size: 15px;
             }
 
             .endpoints-grid {
@@ -703,7 +730,7 @@
             }
 
             .main-content {
-                padding: 20px 15px;
+                padding: 20px 16px;
             }
 
             .music-player {
@@ -715,6 +742,34 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p style="margin-top: 16px; color: #64748b;">Loading...</p>
+    </div>
+
+    <!-- Reproductor de Música Flotante -->
+    <div class="music-player" id="musicPlayer">
+        <div class="music-header">
+            <span class="music-title">🎵 MUSIC PLAYER</span>
+            <button class="music-toggle-min" id="toggleMinimize">−</button>
+        </div>
+        <div class="music-info">
+            <div class="song-name" id="songName">Cargando...</div>
+            <div class="artist-name" id="artistName">---</div>
+        </div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="time-info">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+        </div>
+        <div class="music-controls">
+            <button class="control-btn" id="prevBtn">⏮</button>
+            <button class="control-btn play-btn" id="playPaus
     <!-- Loading Screen -->
     <div id="loadingScreen">
         <div class="spinner-border" role="status">
