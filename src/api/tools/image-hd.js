@@ -26,7 +26,7 @@ module.exports = function(app) {
             if (!allowedTypes.includes(imageFile.mimetype)) {
                 return res.status(400).json({
                     status: false,
-                    creator: 'DVWILKER',
+                    creator: 'DVLYONN',
                     error: 'Invalid format',
                     message: 'Solo se aceptan imágenes JPG o PNG'
                 });
