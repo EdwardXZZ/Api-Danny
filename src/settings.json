@@ -56,12 +56,6 @@
           "name": "YouTube",
           "desc": "Video search",
           "path": "/search/youtube?q="
-        },
-        {
-          "name": "Spotify Search",
-          "desc": "Search songs or albums on Spotify",
-          "path": "/search/spotify?query=",
-          "innerDesc": "🎵 Search music on Spotify\n\nParameters:\n• query - Search term\n• type - tracks or albums (default: tracks)\n• limit - Results count (1-50, default: 10)\n\nExample: /search/spotify?query=Bad Bunny&type=tracks&limit=5"
         }
       ]
     },
@@ -91,12 +85,6 @@
           "desc": "Download files from Mediafire",
           "path": "/download/mediafire?url=",
           "innerDesc": "📦 Download files from Mediafire\n\nUsage: ?url=MEDIAFIRE_URL\nDownload: &download=true"
-        },
-        {
-          "name": "Spotify Downloader",
-          "desc": "Download songs from Spotify as MP3",
-          "path": "/download/spotify?url=",
-          "innerDesc": "🎧 Download music from Spotify\n\nUsage: ?url=SPOTIFY_TRACK_URL\nDownload: &download=true"
         }
       ]
     },
