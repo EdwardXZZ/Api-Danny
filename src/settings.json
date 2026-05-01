@@ -56,6 +56,12 @@
           "name": "YouTube",
           "desc": "Video search",
           "path": "/search/youtube?q="
+        },
+        {
+          "name": "TikTok Search",
+          "desc": "Search videos on TikTok",
+          "path": "/search/tiktok?query=",
+          "innerDesc": "🎵 Search videos on TikTok\n\nParameters:\n• query - Search term\n• limit - Results count (1-30, default: 10)\n\nExample: /search/tiktok?query=badbunny&limit=5"
         }
       ]
     },
