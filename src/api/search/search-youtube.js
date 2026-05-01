@@ -34,7 +34,7 @@ module.exports = function(app) {
         if (!q) {
             return res.status(400).json({
                 status: false,
-                creator: 'DVWILKER',
+                creator: 'DVLYONN',
                 error: 'El parámetro "q" es requerido.',
                 message: 'Please provide a search query: ?q=SEARCH_QUERY'
             });
