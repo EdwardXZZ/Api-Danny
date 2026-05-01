@@ -175,7 +175,7 @@ module.exports = function(app) {
         if (!text) {
             return res.status(400).json({
                 status: false,
-                creator: "DVWILKER",
+                creator: "DVLYONN",
                 error: 'El parámetro "text" es requerido.'
             });
         }
@@ -194,14 +194,14 @@ module.exports = function(app) {
             if (!result || !result.text) {
                 return res.status(502).json({
                     status: false,
-                    creator: "DVWILKER",
+                    creator: "DVLYONN",
                     error: "La IA no devolvió una respuesta válida."
                 });
             }
 
             return res.status(200).json({
                 status: true,
-                creator: "DVWILKER",
+                creator: "DVLYONN",
                 result: {
                     text: result.text
                 },
@@ -212,7 +212,7 @@ module.exports = function(app) {
         } catch (err) {
             return res.status(500).json({
                 status: false,
-                creator: "DVWILKER",
+                creator: "DVLYONN",
                 error: err.message
             });
         }
