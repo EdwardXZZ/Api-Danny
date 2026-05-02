@@ -5,7 +5,7 @@
   "header": {
     "status": "ONLINE",
     "imageSrc": [
-      "http://alyafiles.onrender.com/f/91a5e2ffa8beb16a.png"
+      ""
     ],
     "imageSize": {
       "mobile": "80%",
@@ -97,6 +97,12 @@
           "desc": "Search and download images/videos from Pinterest",
           "path": "/pinterest?query=",
           "innerDesc": "🎨 Search or download from Pinterest\n\nSearch: ?query=SEARCH_TERM&limit=20\nDownload: ?url=PINTEREST_PIN_URL\nDirect download: &download=true"
+        },
+        {
+          "name": "Spotify Downloader",
+          "desc": "Download songs from Spotify as MP3",
+          "path": "/download/spotify?url=",
+          "innerDesc": "🎧 Download music from Spotify\n\nUsage: ?url=SPOTIFY_TRACK_URL\nDownload: &download=true"
         }
       ]
     },
