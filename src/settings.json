@@ -51,7 +51,7 @@
           "name": "Random Meme",
           "desc": "Get a random meme from Reddit",
           "path": "/random/meme",
-          "innerDesc": "🖼️ Meme aleatorio de Reddit\n\nEjemplo: /random/meme\nImagen directa: /random/meme?imagen=true"
+          "innerDesc": "🖼️ Meme aleatorio\n\nEjemplo: /random/meme\nImagen directa: /random/meme?imagen=true"
         }
       ]
     },
