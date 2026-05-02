@@ -6,7 +6,6 @@ const UA = 'Mozilla/5.0 (Android 15; Mobile; SM-F958; rv:130.0) Gecko/130.0 Fire
 class SpotifyDownloader {
     constructor() {
         this.ky = 'C5D58EF67A7584E4A29F6C35BBC4EB12';
-        this.m = /open\.spotify\.com\/track\/([a-zA-Z0-9]+)/;
         this.is = axios.create({
             headers: {
                 'content-type': 'application/json',
@@ -31,55 +30,21 @@ class SpotifyDownloader {
         return { status: true, data: response.data.cdn };
     }
 
-    async getTrackInfo(trackId) {
-        try {
-            const response = await axios.get(`https://api.spotify.com/v1/tracks/${trackId}`, {
-                headers: {
-                    'User-Agent': UA,
-                    'Authorization': 'Bearer BQCxT9M3d2FQ6yX4bK8pL2nR7vW5zJ9sM3cV8bN7mK2jH5gF6dS1aE4rT9yU3iL0oP'
-                }
-            });
-            return {
-                title: response.data.name,
-                artist: response.data.artists.map(a => a.name).join(', '),
-                thumbnail: response.data.album.images[0]?.url || null,
-                duration: response.data.duration_ms
-            };
-        } catch (error) {
-            return {
-                title: 'Unknown Title',
-                artist: 'Unknown Artist',
-                thumbnail: null,
-                duration: 0
-            };
-        }
-    }
-
-    async download(url) {
-        const match = url.match(this.m);
-        if (!match) throw new Error('URL de Spotify no válida');
-        
-        const trackId = match[1];
-        const trackInfo = await this.getTrackInfo(trackId);
-        
-        // Buscar en YouTube el título y artista
-        const searchQuery = encodeURIComponent(`${trackInfo.title} ${trackInfo.artist} audio`);
-        const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
-        
-        const searchRes = await axios.get(youtubeSearchUrl, {
+    async searchOnYoutube(query) {
+        const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+        const response = await axios.get(searchUrl, {
             headers: { 'User-Agent': UA }
         });
-        
-        const videoIdMatch = searchRes.data.match(/\/watch\?v=([a-zA-Z0-9_-]{11})/);
-        if (!videoIdMatch) throw new Error('No se encontró el audio en YouTube');
-        
-        const videoId = videoIdMatch[1];
-        const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
-        
+        const match = response.data.match(/\/watch\?v=([a-zA-Z0-9_-]{11})/);
+        if (!match) throw new Error('No se encontró el video en YouTube');
+        return match[1];
+    }
+
+    async downloadFromSavetube(videoId) {
         const u = await this.getCdn();
         if (!u.status) throw new Error('Error obteniendo CDN');
         
-        const res = await this.is.post(`https://${u.data}/v2/info`, { url: youtubeUrl });
+        const res = await this.is.post(`https://${u.data}/v2/info`, { url: `https://www.youtube.com/watch?v=${videoId}` });
         const dec = await this.decrypt(res.data.data);
         
         const dl = await this.is.post(`https://${u.data}/download`, {
@@ -90,11 +55,42 @@ class SpotifyDownloader {
         });
         
         return {
-            title: trackInfo.title,
-            artist: trackInfo.artist,
-            thumbnail: trackInfo.thumbnail || dec.thumbnail,
-            duration: trackInfo.duration || dec.duration,
+            title: dec.title,
+            thumbnail: dec.thumbnail,
+            duration: dec.duration,
             download_url: dl.data.data.downloadUrl
+        };
+    }
+
+    async download(url) {
+        // Extraer ID de Spotify
+        const trackMatch = url.match(/track\/([a-zA-Z0-9]+)/);
+        if (!trackMatch) throw new Error('URL de Spotify no válida');
+        
+        // Obtener título usando OEmbed de Spotify (sin API key)
+        const oembedUrl = `https://open.spotify.com/oembed?url=${encodeURIComponent(url)}`;
+        const oembedRes = await axios.get(oembedUrl, {
+            headers: { 'User-Agent': UA }
+        });
+        
+        let title = oembedRes.data.title || '';
+        let artist = '';
+        if (title.includes(' - ')) {
+            const parts = title.split(' - ');
+            artist = parts[0];
+            title = parts[1];
+        }
+        
+        const searchQuery = `${title} ${artist} audio`;
+        const videoId = await this.searchOnYoutube(searchQuery);
+        const result = await this.downloadFromSavetube(videoId);
+        
+        return {
+            title: title,
+            artist: artist,
+            thumbnail: result.thumbnail,
+            duration: result.duration,
+            download_url: result.download_url
         };
     }
 }
