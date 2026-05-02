@@ -109,12 +109,6 @@
           "desc": "Download videos from Facebook",
           "path": "/download/facebook?url=",
           "innerDesc": "📘 Download videos from Facebook\n\nUsage: ?url=FB_VIDEO_URL\nDirect download: &download=true"
-        },
-        {
-          "name": "Instagram Downloader",
-          "desc": "Download images/videos from Instagram",
-          "path": "/download/instagram?url=",
-          "innerDesc": "📸 Download content from Instagram\n\nUsage: ?url=INSTAGRAM_POST_URL\nDirect download: &download=true"
         }
       ]
     },
