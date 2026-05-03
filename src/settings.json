@@ -52,6 +52,12 @@
           "desc": "Meme aleatorio de Reddit/Pinterest/Imgflip en español",
           "path": "/random/meme",
           "innerDesc": "🖼️ Meme aleatorio de múltiples fuentes\n\nEjemplo: /random/meme\nImagen directa: /random/meme?imagen=true"
+        },
+        {
+          "name": "GIF Finder",
+          "desc": "Search and get GIFs from multiple sources",
+          "path": "/random/gif?q=",
+          "innerDesc": "🎬 Busca GIFs por palabra clave\n\nParámetros:\n• q - Palabra clave (ej: punch, hug, kiss)\n• limit - Cantidad (1-5, default: 1)\n\nEjemplo: /random/gif?q=anime%20punch"
         }
       ]
     },
