@@ -1,49 +1,19 @@
 const axios = require('axios');
 
-// Lista de instancias de Invidious (para tener respaldo)
 const INVICIOUS_INSTANCES = [
-    'https://inv.riverside.rocks',
-    'https://invidious.snopyta.org',
-    'https://yewtu.be',
     'https://invidious.flokinet.to',
-    'https://inv.zzls.xyz'
+    'https://inv.riverside.rocks',
+    'https://yewtu.be',
+    'https://invidious.snopyta.org',
+    'https://inv.zzls.xyz',
+    'https://invidious.nerdvpn.de',
+    'https://inv.odyssey346.dev',
+    'https://invidious.osi.kr',
+    'https://invidious.reallyaweso.me',
+    'https://vid.puffyan.us'
 ];
 
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
-
-async function getVideoUrl(videoId, quality = 'medium') {
-    for (const instance of INVICIOUS_INSTANCES) {
-        try {
-            // Pedir info del video a Invidious
-            const url = `${instance}/api/v1/videos/${videoId}`;
-            const response = await axios.get(url, {
-                headers: { 'User-Agent': UA },
-                timeout: 8000
-            });
-
-            const data = response.data;
-            const formatos = data.formatStreams || [];
-
-            // Buscar formato deseado
-            let formatoElegido = null;
-            if (quality === 'high') {
-                formatoElegido = formatos.find(f => f.qualityLabel === '720p' || f.qualityLabel === '1080p');
-            } else if (quality === 'medium') {
-                formatoElegido = formatos.find(f => f.qualityLabel === '480p' || f.qualityLabel === '360p');
-            } else if (quality === 'low') {
-                formatoElegido = formatos.find(f => f.qualityLabel === '144p');
-            }
-            
-            if (!formatoElegido && formatos.length) formatoElegido = formatos[0];
-            if (formatoElegido?.url) {
-                return { url: formatoElegido.url, title: data.title };
-            }
-        } catch (error) {
-            console.log(`Instancia ${instance} falló: ${error.message}`);
-        }
-    }
-    throw new Error('No se pudo obtener el enlace del video');
-}
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (Chrome)';
 
 function extractVideoId(url) {
     const patterns = [
@@ -58,52 +28,88 @@ function extractVideoId(url) {
     return null;
 }
 
+async function getVideoUrl(videoId, quality = 'medium') {
+    for (const instance of INVICIOUS_INSTANCES) {
+        try {
+            const url = `${instance}/api/v1/videos/${videoId}`;
+            const response = await axios.get(url, {
+                headers: { 'User-Agent': UA },
+                timeout: 15000
+            });
+            const data = response.data;
+            const formatos = data.formatStreams || [];
+            if (!formatos.length) continue;
+            
+            let formatoElegido = null;
+            if (quality === 'high') {
+                formatoElegido = formatos.find(f => f.qualityLabel === '720p' || f.qualityLabel === '1080p');
+            } else if (quality === 'medium') {
+                formatoElegido = formatos.find(f => f.qualityLabel === '480p' || f.qualityLabel === '360p');
+            } else if (quality === 'low') {
+                formatoElegido = formatos.find(f => f.qualityLabel === '144p');
+            }
+            if (!formatoElegido) formatoElegido = formatos[0];
+            if (formatoElegido?.url) {
+                return { url: formatoElegido.url, title: data.title };
+            }
+        } catch (error) {
+            console.log(`Instancia ${instance} falló: ${error.message}`);
+        }
+    }
+    throw new Error('No se pudo obtener el enlace del video');
+}
+
+async function getAudioUrl(videoId) {
+    for (const instance of INVICIOUS_INSTANCES) {
+        try {
+            const url = `${instance}/api/v1/videos/${videoId}`;
+            const response = await axios.get(url, {
+                headers: { 'User-Agent': UA },
+                timeout: 15000
+            });
+            const data = response.data;
+            const audioFormat = data.formatStreams?.find(f => f.type?.startsWith('audio/') || f.encoding === 'mp4a');
+            if (audioFormat?.url) {
+                return { url: audioFormat.url, title: data.title };
+            }
+        } catch (error) {
+            console.log(`Instancia ${instance} falló: ${error.message}`);
+        }
+    }
+    throw new Error('No se pudo obtener el enlace del audio');
+}
+
 module.exports = function(app) {
     app.get('/download/ytvideo', async (req, res) => {
         const url = req.query.url;
-        const quality = req.query.quality || 'medium'; // low, medium, high
-
-        if (!url) {
-            return res.status(400).json({
-                status: false,
-                creator: "DVLYONN",
-                error: "Falta el parámetro 'url'",
-                usage: "/download/ytvideo?url=YOUTUBE_URL&quality=medium"
-            });
-        }
-
+        const quality = req.query.quality || 'medium';
+        if (!url) return res.status(400).json({ error: "Falta url" });
+        
         const videoId = extractVideoId(url);
-        if (!videoId) {
-            return res.status(400).json({
-                status: false,
-                creator: "DVLYONN",
-                error: "URL de YouTube no válida"
-            });
-        }
-
+        if (!videoId) return res.status(400).json({ error: "URL inválida" });
+        
         try {
             const videoData = await getVideoUrl(videoId, quality);
-            
-            if (req.query.download === 'true') {
-                return res.redirect(videoData.url);
-            }
-            
-            return res.json({
-                status: true,
-                creator: "DVLYONN",
-                result: {
-                    title: videoData.title,
-                    url: videoData.url,
-                    quality: quality
-                }
-            });
-        } catch (error) {
-            console.error('[YouTube Error]', error.message);
-            res.status(500).json({
-                status: false,
-                creator: "DVLYONN",
-                error: error.message
-            });
+            if (req.query.download === 'true') return res.redirect(videoData.url);
+            res.json({ status: true, result: videoData });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+    
+    app.get('/download/ytaudio', async (req, res) => {
+        const url = req.query.url;
+        if (!url) return res.status(400).json({ error: "Falta url" });
+        
+        const videoId = extractVideoId(url);
+        if (!videoId) return res.status(400).json({ error: "URL inválida" });
+        
+        try {
+            const audioData = await getAudioUrl(videoId);
+            if (req.query.download === 'true') return res.redirect(audioData.url);
+            res.json({ status: true, result: audioData });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
         }
     });
 };
