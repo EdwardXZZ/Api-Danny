@@ -1,20 +1,4 @@
-const yts = require('yt-search');
-
-async function searchYouTube(query, limit = 20) {
-    const result = await yts(query);
-    const videos = result.videos.slice(0, limit);
-    
-    return videos.map(video => ({
-        title: video.title,
-        channel: video.author.name,
-        channelId: video.author.id,
-        duration: video.duration.timestamp || `${video.duration.seconds}s`,
-        views: video.views.toLocaleString(),
-        thumbnail: video.thumbnail,
-        url: video.url,
-        publishedAt: video.uploadedAt || 'N/A'
-    }));
-}
+const axios = require('axios');
 
 module.exports = function(app) {
     app.get('/search/youtube', async (req, res) => {
@@ -31,7 +15,21 @@ module.exports = function(app) {
         }
 
         try {
-            const results = await searchYouTube(query, Math.min(limit, 30));
+            const apiUrl = `https://yt-api.levanter.workers.dev/search?q=${encodeURIComponent(query)}&max=${Math.min(limit, 30)}`;
+            const response = await axios.get(apiUrl, { timeout: 15000 });
+            
+            const videos = response.data.results || [];
+            
+            const results = videos.filter(v => v.type === 'video').map(video => ({
+                title: video.title || 'Sin título',
+                channel: video.uploaderName || 'Desconocido',
+                duration: video.length || '?',
+                views: video.views ? video.views.toLocaleString() : 'N/A',
+                thumbnail: video.thumbnail || '',
+                url: `https://www.youtube.com/watch?v=${video.id}`,
+                publishedAt: video.uploadedAt || 'N/A'
+            }));
+            
             return res.json({
                 status: true,
                 creator: "DVLYONN",
@@ -41,11 +39,37 @@ module.exports = function(app) {
             });
         } catch (error) {
             console.error('[YouTube Error]', error.message);
-            res.status(500).json({
-                status: false,
-                creator: "DVLYONN",
-                error: error.message
-            });
+            
+            // Fallback: otra API pública gratuita
+            try {
+                const fallbackUrl = `https://vid.portal.com.ng/api/search?query=${encodeURIComponent(query)}&type=video`;
+                const fallbackRes = await axios.get(fallbackUrl, { timeout: 15000 });
+                const fallbackVideos = fallbackRes.data.data || [];
+                
+                const results = fallbackVideos.slice(0, limit).map(video => ({
+                    title: video.title,
+                    channel: video.channel?.name || 'Desconocido',
+                    duration: video.duration || '?',
+                    views: video.views ? video.views.toLocaleString() : 'N/A',
+                    thumbnail: video.thumbnail?.[0]?.url || '',
+                    url: `https://www.youtube.com/watch?v=${video.videoId}`,
+                    publishedAt: video.publishedAt?.split('T')[0] || 'N/A'
+                }));
+                
+                return res.json({
+                    status: true,
+                    creator: "DVLYONN",
+                    query: query,
+                    total_results: results.length,
+                    result: results
+                });
+            } catch (fallbackError) {
+                return res.status(500).json({
+                    status: false,
+                    creator: "DVLYONN",
+                    error: error.message
+                });
+            }
         }
     });
 };
