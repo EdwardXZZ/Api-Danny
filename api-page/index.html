@@ -1,339 +1,774 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-    <link rel="icon" href="/src/icon.png" type="image/png">
-    <title id="pageTitle">API ALYA · Plataforma Profesional</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍚</text></svg>">
+    <title id="pageTitle">ALYA NO GOHAN · API</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root {
-            --bg-start: #f8fafc;
-            --bg-end: #f1f5f9;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border: #e2e8f0;
-            --card-bg: rgba(255,255,255,0.85);
-            --sidebar-bg: rgba(255,255,255,0.98);
-            --topbar-bg: rgba(255,255,255,0.95);
-            --input-bg: #ffffff;
-            --modal-bg: #ffffff;
-            --btn-start: #1e293b;
-            --btn-end: #0f172a;
-            --accent: #e11d48;
-            --accent-hover: #be123c;
-            --player-bg: rgba(15,23,42,0.95);
-            --shadow: 0 20px 35px -10px rgba(0,0,0,0.1);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        body.dark {
-            --bg-start: #0f172a;
-            --bg-end: #020617;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --border: #334155;
-            --card-bg: rgba(30,41,59,0.85);
-            --sidebar-bg: rgba(15,23,42,0.98);
-            --topbar-bg: rgba(15,23,42,0.95);
-            --input-bg: #1e293b;
-            --modal-bg: #1e293b;
-            --btn-start: #475569;
-            --btn-end: #334155;
-            --player-bg: rgba(0,0,0,0.92);
-            --shadow: 0 20px 35px -10px rgba(0,0,0,0.4);
+
+        /* TEMAS: BLANCO (default) y NEGRO */
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background 0.3s ease, color 0.2s ease;
+            overflow-x: hidden;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; color: var(--text-primary); background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%); overflow-x: hidden; transition: background 0.3s ease, color 0.3s ease; }
-        #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-start); z-index: 10000; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.5s ease; }
-        .spinner-border { border-top-color: var(--accent); }
-        .music-player { position: fixed; bottom: 24px; right: 24px; width: 340px; background: var(--player-bg); backdrop-filter: blur(16px); border-radius: 24px; padding: 16px; z-index: 10000; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .music-player.minimized { width: 56px; padding: 12px; border-radius: 28px; }
-        .music-player.minimized .music-info, .music-player.minimized .music-controls, .music-player.minimized .progress-container { display: none; }
-        .music-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; color: white; }
-        .music-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
-        .music-toggle-min { background: rgba(255,255,255,0.08); border: none; border-radius: 50%; width: 28px; height: 28px; color: white; cursor: pointer; transition: 0.2s; }
-        .music-toggle-min:hover { background: var(--accent); }
-        .song-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; color: white; }
-        .artist-name { font-size: 11px; opacity: 0.7; color: white; }
-        .progress-container { background: rgba(255,255,255,0.15); border-radius: 20px; height: 4px; margin: 12px 0; cursor: pointer; }
-        .progress-bar { background: var(--accent); border-radius: 20px; height: 100%; width: 0%; transition: width 0.1s linear; }
-        .time-info { display: flex; justify-content: space-between; color: rgba(255,255,255,0.5); font-size: 10px; margin-bottom: 12px; }
-        .music-controls { display: flex; justify-content: center; gap: 20px; }
-        .control-btn { background: rgba(255,255,255,0.08); border: none; border-radius: 50%; width: 36px; height: 36px; color: white; cursor: pointer; transition: 0.2s; }
-        .control-btn.play-btn { background: var(--accent); width: 48px; height: 48px; }
-        .control-btn:hover { transform: scale(1.08); background: rgba(255,255,255,0.15); }
-        .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--topbar-bg); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 1000; }
-        .menu-toggle { width: 44px; height: 44px; background: rgba(0,0,0,0.05); border: none; border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; cursor: pointer; }
-        body.dark .menu-toggle { background: rgba(255,255,255,0.08); }
-        .menu-toggle span { display: block; width: 20px; height: 2px; background: var(--text-primary); transition: 0.3s; border-radius: 2px; }
-        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-        .menu-toggle.active span:nth-child(2) { opacity: 0; }
-        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-        .api-name { font-size: 20px; font-weight: 800; background: linear-gradient(135deg, var(--text-primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .top-bar-right { display: flex; align-items: center; gap: 16px; }
-        .theme-toggle, .logout-top-btn { background: none; border: 1px solid var(--border); border-radius: 40px; padding: 8px 18px; cursor: pointer; color: var(--text-primary); transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; }
-        .theme-toggle:hover, .logout-top-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
-        .sidebar { position: fixed; top: 64px; left: -300px; width: 300px; height: calc(100vh - 64px); background: var(--sidebar-bg); backdrop-filter: blur(16px); border-right: 1px solid var(--border); transition: left 0.3s ease; z-index: 999; padding: 24px 0; overflow-y: auto; }
-        .sidebar.open { left: 0; }
-        .sidebar-overlay { position: fixed; top: 64px; left: 0; width: 100%; height: calc(100vh - 64px); background: rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 998; }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .sidebar-item { padding: 12px 28px; display: flex; align-items: center; gap: 12px; color: var(--text-secondary); cursor: pointer; transition: 0.2s; font-weight: 500; border-left: 3px solid transparent; }
-        .sidebar-item:hover, .sidebar-item.active { background: var(--accent); color: white; border-left-color: white; }
-        .sidebar-category { padding: 20px 28px 8px; font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
-        .main-content { margin-top: 80px; padding: 40px 32px; max-width: 1400px; margin-left: auto; margin-right: auto; min-height: calc(100vh - 120px); }
-        .home-banner { text-align: center; padding: 40px 20px; animation: fadeInUp 0.6s ease; }
-        .home-banner img { max-width: 180px; border-radius: 50%; margin-bottom: 32px; box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2); border: 3px solid var(--accent); object-fit: cover; width: 180px; height: 180px; }
-        .home-title { font-size: 56px; font-weight: 800; margin-bottom: 12px; background: linear-gradient(135deg, var(--text-primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px; }
-        .home-version { display: inline-block; background: var(--accent); color: white; padding: 6px 20px; border-radius: 60px; font-size: 13px; font-weight: 600; margin-bottom: 24px; }
-        .home-description { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
-        .status-grid, .endpoints-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; margin-top: 32px; }
-        .status-card, .api-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 24px; padding: 24px; transition: all 0.3s; }
-        .status-card:hover, .api-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: var(--shadow); }
-        .endpoint-btn { background: linear-gradient(135deg, var(--btn-start), var(--btn-end)); border: none; padding: 10px 28px; border-radius: 40px; color: white; font-weight: 600; transition: 0.2s; cursor: pointer; }
-        .endpoint-btn:hover { background: var(--accent); transform: scale(1.02); }
-        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1050; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--modal-bg); border-radius: 32px; border: 1px solid var(--border); width: 100%; max-width: 460px; padding: 40px; box-shadow: 0 25px 45px -12px rgba(0,0,0,0.5); animation: fadeInUp 0.5s ease; text-align: center; }
-        .auth-card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 3px solid var(--accent); }
-        .auth-card h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--text-primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .input-custom { margin-bottom: 20px; text-align: left; }
-        .input-custom input { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; color: var(--text-primary); transition: 0.2s; }
-        .input-custom input:focus { outline: none; border-color: var(--accent); }
-        .auth-btn { background: var(--accent); width: 100%; padding: 12px; border: none; border-radius: 40px; font-weight: 700; color: white; transition: 0.2s; }
-        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -6px var(--accent); }
-        .switch-auth a { color: var(--accent); cursor: pointer; font-weight: 600; }
-        .modal-content { background: var(--modal-bg); border: 1px solid var(--border); border-radius: 24px; }
-        .modal-header { border-bottom-color: var(--border); }
-        .modal-title { color: var(--text-primary); }
-        .api-endpoint-box { background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-family: monospace; font-size: 13px; color: var(--accent); word-break: break-all; }
-        .param-input { background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; color: var(--text-primary); width: 100%; margin-bottom: 12px; }
-        .response-box { background: #1e293b; padding: 16px; border-radius: 12px; color: #e2e8f0; font-family: monospace; font-size: 12px; white-space: pre-wrap; max-height: 400px; overflow-y: auto; margin-top: 20px; }
-        .footer { text-align: center; padding: 30px 20px; color: var(--text-secondary); border-top: 1px solid var(--border); margin-top: 40px; font-size: 13px; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 768px) { .home-title { font-size: 32px; } .main-content { padding: 20px 16px; } .home-banner img { width: 120px; height: 120px; } .music-player { width: 280px; } }
+
+        body.white-theme {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #0f172a;
+        }
+
+        body.black-theme {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+        }
+
+        body.black-theme .top-bar,
+        body.black-theme .sidebar,
+        body.black-theme .status-card,
+        body.black-theme .endpoint-card,
+        body.black-theme .modal-content,
+        body.black-theme .search-input {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+
+        body.black-theme .top-link,
+        body.black-theme .sidebar-item {
+            color: #cbd5e1;
+        }
+
+        body.black-theme .sidebar-item:hover,
+        body.black-theme .top-link:hover {
+            color: #f43f5e;
+        }
+
+        body.black-theme .sidebar-item.active {
+            background: #1e293b;
+            border-left-color: #f43f5e;
+            color: #f43f5e;
+        }
+
+        body.black-theme .api-name {
+            background: linear-gradient(135deg, #f1f5f9, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        body.black-theme .search-input {
+            background: #1e293b;
+            border-color: #475569;
+            color: white;
+        }
+
+        body.black-theme .response-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+
+        body.black-theme .footer {
+            border-top-color: #334155;
+            color: #94a3b8;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+        }
+
+        body.black-theme #loadingScreen {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        #loadingScreen.fade-out {
+            opacity: 0;
+        }
+
+        /* Music Player Flotante */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            background: rgba(15,23,42,0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 15px;
+            z-index: 10000;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .music-player.minimized {
+            width: 50px;
+            padding: 10px;
+            border-radius: 25px;
+        }
+
+        .music-player.minimized .music-info,
+        .music-player.minimized .music-controls,
+        .music-player.minimized .progress-container {
+            display: none;
+        }
+
+        .music-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .music-title {
+            font-size: 12px;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            opacity: 0.8;
+        }
+
+        .music-toggle-min {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 5px;
+            opacity: 0.7;
+        }
+
+        .music-info {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .song-name {
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .artist-name {
+            color: rgba(255,255,255,0.6);
+            font-size: 10px;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            height: 4px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            background: #e11d48;
+            border-radius: 10px;
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.5);
+            font-size: 10px;
+            margin-bottom: 10px;
+        }
+
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .control-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .control-btn.play-btn {
+            background: #e11d48;
+            width: 45px;
+            height: 45px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .top-bar.scrolled {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            border-radius: 8px;
+        }
+
+        .menu-toggle:hover {
+            background: #f1f5f9;
+        }
+
+        body.black-theme .menu-toggle:hover {
+            background: #334155;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #1e293b;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        body.black-theme .menu-toggle span {
+            background: #e2e8f0;
+        }
+
+        .api-name {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .top-link {
+            color: #475569;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .theme-toggle-btn, .logout-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        body.black-theme .theme-toggle-btn,
+        body.black-theme .logout-btn {
+            border-color: #475569;
+            color: #e2e8f0;
+            background: rgba(255,255,255,0.05);
+        }
+        .theme-toggle-btn:hover, .logout-btn:hover {
+            background: #e11d48;
+            color: white;
+            border-color: #e11d48;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -280px;
+            width: 280px;
+            height: calc(100vh - 60px);
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 999;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 60px);
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 998;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .sidebar-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .sidebar-category {
+            padding: 20px 24px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 60px;
+            padding: 40px 24px;
+            max-width: 1300px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 120px);
+        }
+
+        .home-banner img {
+            max-width: 100%;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        .home-title {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        body.black-theme .home-title {
+            background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        .home-version {
+            background: #e11d48;
+            color: white;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+        }
+
+        /* Cards */
+        .status-card, .endpoint-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        .endpoint-card:hover {
+            transform: translateY(-3px);
+            border-color: #e11d48;
+        }
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 60px;
+            font-size: 15px;
+            background: white;
+        }
+        .response-box {
+            background: #1e293b;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow: auto;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .home-title { font-size: 32px; }
+            .music-player { width: 280px; }
+        }
+        .auth-prompt {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .auth-card {
+            max-width: 400px;
+            margin: auto;
+            background: rgba(255,255,255,0.9);
+            border-radius: 32px;
+            padding: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+        }
+        body.black-theme .auth-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
     </style>
 </head>
-<body>
+<body class="white-theme">
+    <div id="loadingScreen"><div class="spinner-border text-danger"></div><p style="margin-top:16px;">Cargando Alya No Gohan...</p></div>
 
-<div id="loadingScreen"><div class="spinner-border"></div><p class="mt-3">Cargando plataforma...</p></div>
-
-<div class="music-player" id="musicPlayer">
-    <div class="music-header"><span class="music-title">🎵 LYONN RADIO</span><button class="music-toggle-min" id="toggleMinimize">−</button></div>
-    <div class="music-info"><div class="song-name" id="songName">Cargando...</div><div class="artist-name" id="artistName">---</div></div>
-    <div class="progress-container" id="progressContainer"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="time-info"><span id="currentTime">0:00</span><span id="duration">0:00</span></div>
-    <div class="music-controls"><button class="control-btn" id="prevBtn"><i class="fas fa-backward"></i></button><button class="control-btn play-btn" id="playPauseBtn"><i class="fas fa-play"></i></button><button class="control-btn" id="nextBtn"><i class="fas fa-forward"></i></button></div>
-</div>
-<audio id="audioPlayer"></audio>
-
-<div class="top-bar">
-    <div class="top-bar-left"><button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button><div class="api-name" id="apiName">API ALYA</div></div>
-    <div class="top-bar-right"><button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i> Tema</button><button class="logout-top-btn" id="logoutBtn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Salir</button></div>
-</div>
-
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-nav">
-        <div class="sidebar-item active" data-page="home"><i class="fas fa-home"></i> Inicio</div>
-        <div class="sidebar-item" data-page="status"><i class="fas fa-chart-line"></i> Estado</div>
-        <div class="sidebar-category"><i class="fas fa-tag"></i> Categorías</div>
-        <div id="categoriesNav"></div>
-        <div class="sidebar-item" data-page="all"><i class="fas fa-cubes"></i> Todos</div>
+    <!-- MUSIC PLAYER (con la música especificada) -->
+    <div class="music-player" id="musicPlayer">
+        <div class="music-header"><span class="music-title">🎵 UNA VAINA LOCA · ACENTO QUINTO REAL</span><button class="music-toggle-min" id="toggleMinimize">−</button></div>
+        <div class="music-info"><div class="song-name" id="songName">Una vaina loca</div><div class="artist-name" id="artistName">Lyonn Special</div></div>
+        <div class="progress-container" id="progressContainer"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="time-info"><span id="currentTime">0:00</span><span id="duration">0:00</span></div>
+        <div class="music-controls"><button class="control-btn" id="prevBtn"><i class="fas fa-backward"></i></button><button class="control-btn play-btn" id="playPauseBtn"><i class="fas fa-play"></i></button><button class="control-btn" id="nextBtn"><i class="fas fa-forward"></i></button></div>
     </div>
-</div>
+    <audio id="audioPlayer" style="display: none;"></audio>
 
-<div class="main-content" id="mainContent"></div>
+    <div class="top-bar"><div class="top-bar-left"><button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button><div class="api-name" id="apiName">ALYA NO GOHAN</div></div><div class="top-bar-right"><div class="top-links" id="topLinks"></div><button class="theme-toggle-btn" id="themeToggleBtn"><i class="fas fa-moon"></i> Modo Oscuro</button><button class="logout-btn" id="logoutBtn" style="display: none;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button></div></div>
 
-<div class="footer"><p id="footerText">Created by Lyonn <i class="fas fa-crown"></i></p></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar"><div class="sidebar-nav"><div class="sidebar-item active" data-page="home"><i class="fas fa-home me-2"></i> Home</div><div class="sidebar-item" data-page="status"><i class="fas fa-chart-line me-2"></i> Status</div><div class="sidebar-category"><i class="fas fa-tag me-2"></i> Categories</div><div id="categoriesNav"></div><div class="sidebar-item" data-page="all"><i class="fas fa-cubes me-2"></i> All Endpoints</div></div></div>
 
-<div class="modal fade" id="apiModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title" id="modalTitle"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <div class="api-endpoint-box" id="endpointBox" style="display:none;"></div>
-                <div id="paramsContainer"></div>
-                <div id="loadingContainer" style="display:none; text-align:center;"><div class="spinner-border"></div></div>
-                <div id="responseContainer"></div>
-            </div>
-            <div class="modal-footer"><button class="submit-btn" id="submitBtn" style="display:none;">Ejecutar</button></div>
-        </div>
-    </div>
-</div>
+    <div class="main-content" id="mainContent"></div>
+    <div class="footer"><p id="footerText">✨ Alya No Gohan · API Profesional</p></div>
 
-<div id="authOverlay" class="auth-overlay">
-    <div class="auth-card" id="loginCard">
-        <img src="https://files.catbox.moe/osy7r9.jpg" alt="Alya">
-        <h2>Bienvenido a ALYA</h2>
-        <div class="mb-3">Accede a tu cuenta</div>
-        <div class="input-custom"><label>CORREO</label><input type="email" id="loginEmail" placeholder="usuario@ejemplo.com"></div>
-        <div class="input-custom"><label>CONTRASEÑA</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
-        <button class="auth-btn" id="doLoginBtn">Iniciar Sesión</button>
-        <div class="switch-auth mt-3">¿Sin cuenta? <a id="showRegisterBtn">Regístrate</a></div>
-    </div>
-    <div class="auth-card" id="registerCard" style="display:none">
-        <img src="https://files.catbox.moe/osy7r9.jpg" alt="Alya">
-        <h2>Crear Cuenta</h2>
-        <div class="mb-3">Regístrate gratis</div>
-        <div class="input-custom"><label>CORREO</label><input type="email" id="regEmail"></div>
-        <div class="input-custom"><label>CONTRASEÑA</label><input type="password" id="regPassword"></div>
-        <div class="input-custom"><label>CONFIRMAR</label><input type="password" id="regConfirm"></div>
-        <button class="auth-btn" id="doRegisterBtn">Registrarse</button>
-        <div class="switch-auth mt-3">¿Ya tienes cuenta? <a id="showLoginBtn">Inicia Sesión</a></div>
-    </div>
-</div>
+    <div class="modal fade" id="apiModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content"><div class="modal-header"><div><h5 class="modal-title" id="modalTitle"></h5><p class="modal-desc" id="modalDesc"></p></div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="api-endpoint-box bg-light p-2 rounded mb-3" id="endpointBox" style="display: none;"></div><div id="paramsContainer"></div><div id="loadingContainer" style="display: none; text-align: center;"><div class="spinner-border"></div></div><div id="responseContainer"></div></div><div class="modal-footer"><button class="submit-btn btn btn-dark" id="submitBtn" style="display: none;">Enviar</button></div></div></div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const playlist = [
-        { name: "Acento Quinto Real", artist: "Lyonn", url: "https://files.catbox.moe/65kqmi.mp3" },
-        { name: "Una vaina loca", artist: "Lyonn Special", url: "https://files.catbox.moe/g2zd2z.mp3" },
-        { name: "Latin Lover", artist: "Neutro Shorty", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg" },
-        { name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg" }
-    ];
-    let currentIndex = 0, isPlaying = false;
-    const audio = document.getElementById('audioPlayer');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const songNameEl = document.getElementById('songName');
-    const artistNameEl = document.getElementById('artistName');
-    const progressBar = document.getElementById('progressBar');
-    const progressContainer = document.getElementById('progressContainer');
-    const currentTimeEl = document.getElementById('currentTime');
-    const durationEl = document.getElementById('duration');
-    const toggleMinimize = document.getElementById('toggleMinimize');
-    const musicPlayer = document.getElementById('musicPlayer');
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ====================== SISTEMA DE LOGIN / REGISTRO ======================
+        let currentUser = localStorage.getItem('alya_user') ? JSON.parse(localStorage.getItem('alya_user')) : null;
+        const usersDB = JSON.parse(localStorage.getItem('alya_users') || '[]');
 
-    function loadSong(index) {
-        const song = playlist[index];
-        songNameEl.textContent = song.name;
-        artistNameEl.textContent = song.artist;
-        audio.src = song.url;
-        audio.load();
-        if (isPlaying) audio.play().catch(e => console.log(e));
-        updatePlayIcon();
-    }
-    function updatePlayIcon() { playPauseBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>'; }
-    function playPause() { isPlaying ? audio.pause() : audio.play(); isPlaying = !isPlaying; updatePlayIcon(); }
-    function nextSong() { currentIndex = (currentIndex + 1) % playlist.length; loadSong(currentIndex); if (!isPlaying) { isPlaying = true; audio.play(); } }
-    function prevSong() { currentIndex = (currentIndex - 1 + playlist.length) % playlist.length; loadSong(currentIndex); if (!isPlaying) { isPlaying = true; audio.play(); } }
-    function updateProgress() { if (audio.duration) { progressBar.style.width = `${(audio.currentTime / audio.duration) * 100}%`; currentTimeEl.textContent = formatTime(audio.currentTime); durationEl.textContent = formatTime(audio.duration); } }
-    function formatTime(sec) { const mins = Math.floor(sec / 60); const s = Math.floor(sec % 60); return `${mins}:${s.toString().padStart(2, '0')}`; }
-    function setProgress(e) { const rect = progressContainer.getBoundingClientRect(); const percent = (e.clientX - rect.left) / rect.width; audio.currentTime = percent * audio.duration; }
-    playPauseBtn.addEventListener('click', playPause);
-    nextBtn.addEventListener('click', nextSong);
-    prevBtn.addEventListener('click', prevSong);
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('ended', nextSong);
-    progressContainer.addEventListener('click', setProgress);
-    toggleMinimize.addEventListener('click', () => { musicPlayer.classList.toggle('minimized'); toggleMinimize.textContent = musicPlayer.classList.contains('minimized') ? '+' : '−'; });
-    loadSong(0);
+        function saveUsers() { localStorage.setItem('alya_users', JSON.stringify(usersDB)); }
+        function saveCurrentUser() { if(currentUser) localStorage.setItem('alya_user', JSON.stringify(currentUser)); else localStorage.removeItem('alya_user'); }
 
-    const themeBtn = document.getElementById('themeToggleBtn');
-    themeBtn.addEventListener('click', () => { document.body.classList.toggle('dark'); themeBtn.innerHTML = document.body.classList.contains('dark') ? '<i class="fas fa-sun"></i> Claro' : '<i class="fas fa-moon"></i> Tema'; localStorage.setItem('alya_theme', document.body.classList.contains('dark') ? 'dark' : 'light'); });
-    if (localStorage.getItem('alya_theme') === 'dark') document.body.classList.add('dark');
+        function showAuthModal() {
+            const modalHtml = `
+                <div class="modal fade" id="authModal" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="fas fa-shield-alt"></i> Acceso a Alya No Gohan</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><ul class="nav nav-tabs" id="authTab" role="tablist"><li class="nav-item" role="presentation"><button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">Iniciar Sesión</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab">Registrarse</button></li></ul><div class="tab-content mt-3"><div class="tab-pane fade show active" id="login" role="tabpanel"><input type="text" id="loginUser" class="form-control mb-2" placeholder="Usuario"><input type="password" id="loginPass" class="form-control mb-2" placeholder="Contraseña"><button id="doLoginBtn" class="btn btn-danger w-100">Entrar</button></div><div class="tab-pane fade" id="register" role="tabpanel"><input type="text" id="regUser" class="form-control mb-2" placeholder="Usuario nuevo"><input type="password" id="regPass" class="form-control mb-2" placeholder="Contraseña"><button id="doRegBtn" class="btn btn-outline-danger w-100">Crear cuenta</button></div></div></div></div></div></div>`;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const authModalEl = document.getElementById('authModal');
+            const authModal = new bootstrap.Modal(authModalEl, { backdrop: 'static', keyboard: false });
+            authModal.show();
 
-    const authOverlay = document.getElementById('authOverlay');
-    const logoutBtn = document.getElementById('logoutBtn');
-    let users = JSON.parse(localStorage.getItem('alya_users')) || [];
-    function saveUsers() { localStorage.setItem('alya_users', JSON.stringify(users)); }
-    document.getElementById('showRegisterBtn').onclick = () => { document.getElementById('loginCard').style.display = 'none'; document.getElementById('registerCard').style.display = 'block'; };
-    document.getElementById('showLoginBtn').onclick = () => { document.getElementById('registerCard').style.display = 'none'; document.getElementById('loginCard').style.display = 'block'; };
-    document.getElementById('doLoginBtn').onclick = () => {
-        const email = document.getElementById('loginEmail').value.trim();
-        const pass = document.getElementById('loginPassword').value.trim();
-        const user = users.find(u => u.email === email && u.password === pass);
-        if (user) {
-            localStorage.setItem('alya_logged', JSON.stringify({ email }));
-            authOverlay.style.display = 'none';
-            logoutBtn.style.display = 'flex';
-            cargarInterfazCompleta();
-        } else alert('Credenciales incorrectas');
-    };
-    document.getElementById('doRegisterBtn').onclick = () => {
-        const email = document.getElementById('regEmail').value.trim();
-        const pass = document.getElementById('regPassword').value;
-        const confirm = document.getElementById('regConfirm').value;
-        if (!email || !pass) return alert('Completa campos');
-        if (pass !== confirm) return alert('Contraseñas no coinciden');
-        if (users.find(u => u.email === email)) return alert('Usuario ya existe');
-        users.push({ email, password: pass });
-        saveUsers();
-        alert('Registro exitoso. Inicia sesión');
-        document.getElementById('registerCard').style.display = 'none';
-        document.getElementById('loginCard').style.display = 'block';
-    };
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('alya_logged');
-        authOverlay.style.display = 'flex';
-        logoutBtn.style.display = 'none';
-        document.getElementById('loginCard').style.display = 'block';
-        document.getElementById('registerCard').style.display = 'none';
-    });
-    if (localStorage.getItem('alya_logged')) { authOverlay.style.display = 'none'; logoutBtn.style.display = 'flex'; cargarInterfazCompleta(); }
+            document.getElementById('doLoginBtn').onclick = () => {
+                const user = document.getElementById('loginUser').value.trim();
+                const pass = document.getElementById('loginPass').value.trim();
+                const found = usersDB.find(u => u.username === user && u.password === pass);
+                if(found) {
+                    currentUser = found;
+                    saveCurrentUser();
+                    authModal.hide();
+                    location.reload();
+                } else alert('❌ Usuario o contraseña incorrectos');
+            };
+            document.getElementById('doRegBtn').onclick = () => {
+                const user = document.getElementById('regUser').value.trim();
+                const pass = document.getElementById('regPass').value.trim();
+                if(!user || !pass) return alert('Completa ambos campos');
+                if(usersDB.find(u => u.username === user)) return alert('Usuario ya existe');
+                const newUser = { username: user, password: pass, createdAt: new Date().toISOString() };
+                usersDB.push(newUser);
+                saveUsers();
+                currentUser = newUser;
+                saveCurrentUser();
+                authModal.hide();
+                location.reload();
+            };
+            authModalEl.addEventListener('hidden.bs.modal', () => { if(!currentUser) showAuthModal(); });
+        }
 
-    let settings = { categories: [] };
-    async function cargarInterfazCompleta() {
-        try {
-            const res = await fetch('/src/settings.json');
-            settings = await res.json();
-            document.getElementById('apiName').textContent = settings.name || 'API ALYA';
-            document.getElementById('footerText').innerHTML = `Created by ${settings.apiSettings?.creator || 'Lyonn'} <i class="fas fa-crown"></i>`;
-            const categoriesNav = document.getElementById('categoriesNav');
-            if (settings.categories) settings.categories.forEach(cat => { let div = document.createElement('div'); div.className = 'sidebar-item'; div.dataset.page = 'category'; div.dataset.category = cat.name; div.innerHTML = `<i class="fas fa-folder"></i> ${cat.name}`; categoriesNav.appendChild(div); });
-            renderHome();
-            attachSidebarEvents();
-        } catch(e) { console.error('Error cargando settings:', e); renderHomeFallback(); }
-    }
-    function renderHomeFallback() {
-        document.getElementById('mainContent').innerHTML = `<div class="home-banner"><img src="https://files.catbox.moe/osy7r9.jpg" alt="Alya"><h1 class="home-title">API ALYA</h1><div class="home-version">v1.0</div><p class="home-description">Plataforma profesional de APIs</p><div class="endpoints-grid" id="homeEndpointsGrid"></div></div>`;
-        document.getElementById('homeEndpointsGrid').innerHTML = `<div class="api-card"><div class="card-header"><strong>YouTube Search</strong></div><div class="card-desc">Busca videos en YouTube</div><button class="endpoint-btn" data-path="/search/youtube" data-params='[{"name":"q","required":true}]'>Probar</button></div>`;
-        attachModalButtons();
-    }
-    function renderHome() {
-        const container = document.getElementById('mainContent');
-        container.innerHTML = `<div class="home-banner"><img src="https://files.catbox.moe/osy7r9.jpg" alt="Alya"><h1 class="home-title">${settings.name || 'API ALYA'}</h1><div class="home-version">${settings.version || 'v1.0'}</div><p class="home-description">${settings.description || 'Documentación interactiva de APIs'}</p><div class="endpoints-grid" id="homeEndpointsGrid"></div></div>`;
-        const firstItems = settings.categories?.[0]?.items?.slice(0, 3) || [];
-        document.getElementById('homeEndpointsGrid').innerHTML = firstItems.map(item => `<div class="api-card"><div class="card-header"><strong>${item.name}</strong></div><div class="card-desc">${item.desc}</div><button class="endpoint-btn" data-path="${item.path}" data-params='${JSON.stringify(item.params || [])}'>Probar</button></div>`).join('');
-        attachModalButtons();
-    }
-    function attachModalButtons() {
-        document.querySelectorAll('.endpoint-btn').forEach(btn => btn.addEventListener('click', () => { abrirModal(btn.dataset.path, JSON.parse(btn.dataset.params)); }));
-    }
-    let modalInstance = null;
-    function abrirModal(path, paramsList) {
-        const modalEl = document.getElementById('apiModal');
-        modalInstance = new bootstrap.Modal(modalEl);
-        document.getElementById('modalTitle').innerText = path;
-        document.getElementById('paramsContainer').innerHTML = paramsList.map(p => `<input type="text" class="param-input" placeholder="${p.name}${p.required ? ' *' : ''}" id="param_${p.name}">`).join('');
-        document.getElementById('submitBtn').style.display = 'block';
-        document.getElementById('submitBtn').onclick = async () => {
-            let query = new URLSearchParams();
-            for (let p of paramsList) { let val = document.getElementById(`param_${p.name}`)?.value; if (val) query.append(p.name, val); }
-            const url = `${window.location.origin}${path}?${query.toString()}`;
-            const responseDiv = document.getElementById('responseContainer');
-            responseDiv.innerHTML = '<div class="spinner-border"></div>';
-            try { const res = await fetch(url); const data = await res.json(); responseDiv.innerHTML = `<pre class="response-box">${JSON.stringify(data, null, 2)}</pre>`; } catch(e) { responseDiv.innerHTML = `<pre class="response-box">Error: ${e.message}</pre>`; }
+        // Verificar autenticación
+        if(!currentUser) showAuthModal();
+
+        // Cerrar sesión
+        document.getElementById('logoutBtn').onclick = () => {
+            currentUser = null;
+            saveCurrentUser();
+            location.reload();
         };
-        modalInstance.show();
-    }
-    function attachSidebarEvents() {
-        document.querySelectorAll('.sidebar-item').forEach(el => el.addEventListener('click', (e) => { mostrarSeccion(e.currentTarget.dataset.page, e.currentTarget.dataset.category); }));
-    }
-    function mostrarSeccion(page, category) {
-        const content = document.getElementById('mainContent');
-        if (page === 'home') renderHome();
-        else if (page === 'status') content.innerHTML = `<h2>Estado del API</h2><div class="status-grid"><div class="status-card"><div class="status-card-title">Estado</div><div class="status-card-value" style="color:#10b981;">● Online</div></div><div class="status-card"><div class="status-card-title">Versión</div><div class="status-card-value">${settings.version || '1.0'}</div></div></div>`;
-        else if (page === 'category') { const cat = settings.categories?.find(c => c.name === category); if (cat) content.innerHTML = `<h2>${cat.name}</h2><div class="endpoints-grid">${cat.items.map(item => `<div class="api-card"><strong>${item.name}</strong><p>${item.desc}</p><button class="endpoint-btn" data-path="${item.path}" data-params='${JSON.stringify(item.params || [])}'>Probar</button></div>`).join('')}</div>`; attachModalButtons(); }
-        else if (page === 'all') { let allItems = []; settings.categories?.forEach(cat => allItems.push(...cat.items)); content.innerHTML = `<h2>Todos los Endpoints</h2><div class="endpoints-grid">${allItems.map(item => `<div class="api-card"><strong>${item.name}</strong><p>${item.desc}</p><button class="endpoint-btn" data-path="${item.path}" data-params='${JSON.stringify(item.params || [])}'>Probar</button></div>`).join('')}</div>`; attachModalButtons(); }
-    }
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    menuToggle.addEventListener('click', () => { menuToggle.classList.toggle('active'); sidebar.classList.toggle('open'); overlay.classList.toggle('active'); });
-    overlay.addEventListener('click', () => { menuToggle.classList.remove('active'); sidebar.classList.remove('open'); overlay.classList.remove('active'); });
-    window.addEventListener('load', () => setTimeout(() => document.getElementById('loadingScreen')?.remove(), 600));
-</script>
+        if(currentUser) document.getElementById('logoutBtn').style.display = 'flex';
+
+        // ====================== TEMA BLANCO / NEGRO ======================
+        let isDark = localStorage.getItem('alya_theme') === 'dark';
+        function applyTheme() {
+            if(isDark) {
+                document.body.classList.remove('white-theme');
+                document.body.classList.add('black-theme');
+                document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
+            } else {
+                document.body.classList.remove('black-theme');
+                document.body.classList.add('white-theme');
+                document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-moon"></i> Modo Oscuro';
+            }
+        }
+        applyTheme();
+        document.getElementById('themeToggleBtn').onclick = () => {
+            isDark = !isDark;
+            localStorage.setItem('alya_theme', isDark ? 'dark' : 'light');
+            applyTheme();
+        };
+
+        // ====================== REPRODUCTOR MÚSICA (UNA VAINA LOCA + ACENTO QUINTO REAL) ======================
+        const playlist = [
+            { name: "Una vaina loca", artist: "Lyonn Special · Acento Quinto Real", url: "https://files.catbox.moe/65kqmi.mp3" },
+            { name: "Latin Lover", artist: "Neutro Shorty", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg" },
+            { name: "Odisea", artist: "Ozuna", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775935979163.mpeg" },
+            { name: "Maquiavélico", artist: "Cancerbero", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936827892.mpeg" }
+        ];
+        let currentSongIndex = 0, isPlaying = false, isMinimized = false;
+        const audioEl = document.getElementById('audioPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const songNameEl = document.getElementById('songName');
+        const artistNameEl = document.getElementById('artistName');
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const toggleMinimizeBtn = document.getElementById('toggleMinimize');
+        const musicPlayerDiv = document.getElementById('musicPlayer');
+
+        function loadSong(idx) {
+            const s = playlist[idx];
+            songNameEl.textContent = s.name;
+            artistNameEl.textContent = s.artist;
+            audioEl.src = s.url;
+            audioEl.load();
+            if(isPlaying) audioEl.play().catch(e=>console.log);
+            updatePlayIcon();
+        }
+        function updatePlayIcon() {
+            const icon = playPauseBtn.querySelector('i');
+            icon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+        }
+        function playPauseSong() {
+            if(isPlaying) audioEl.pause();
+            else audioEl.play().catch(e=>console.log);
+            isPlaying = !isPlaying;
+            updatePlayIcon();
+        }
+        function nextSong() { currentSongIndex = (currentSongIndex+1)%playlist.length; loadSong(currentSongIndex); if(!isPlaying) playPauseSong(); }
+        function prevSong() { currentSongIndex = (currentSongIndex-1+playlist.length)%playlist.length; loadSong(currentSongIndex); if(!isPlaying) playPauseSong(); }
+        function updateProgressBar() {
+            if(audioEl.duration && !isNaN(audioEl.duration)) {
+                progressBar.style.width = `${(audioEl.currentTime/audioEl.duration)*100}%`;
+                currentTimeEl.textContent = formatTime(audioEl.currentTime);
+                durationEl.textContent = formatTime(audioEl.duration);
+            }
+        }
+        function formatTime(sec) { if(isNaN(sec)) return "0:00"; const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s.toString().padStart(2,'0')}`; }
+        function setProgress(e) { const rect = progressContainer.getBoundingClientRect(); const percent = (e.clientX - rect.left)/rect.width; audioEl.currentTime = percent * audioEl.duration; }
+        function toggleMinimizePlayer() { isMinimized = !isMinimized; musicPlayerDiv.classList.toggle('minimized'); toggleMinimizeBtn.textContent = isMinimized ? '+' : '−'; }
+        playPauseBtn.addEventListener('click', playPauseSong);
+        nextBtn.addEventListener('click', nextSong);
+        prevBtn.addEventListener('click', prevSong);
+        audioEl.addEventListener('timeupdate', updateProgressBar);
+        audioEl.addEventListener('ended', nextSong);
+        progressContainer.addEventListener('click', setProgress);
+        toggleMinimizeBtn.addEventListener('click', toggleMinimizePlayer);
+        loadSong(0); // primera canción: Una vaina loca
+
+        // ====================== API & DASHBOARD ======================
+        let settings = { name: "ALYA NO GOHAN", version: "v2.0 · Quinto Real", description: "API con endpoints profesionales, música y estilo premium", header: { imageSrc: ["https://files.catbox.moe/osy7r9.jpg"], imageSize: { desktop: "50%" } }, apiSettings: { creator: "Lyonn" }, links: [{ name: "GitHub", url: "#" }], categories: [{ name: "Usuarios", items: [{ name: "Perfil", path: "/api/user", desc: "Obtener perfil", innerDesc: "Simula datos de usuario" }] }, { name: "Contenido", items: [{ name: "Feed", path: "/api/feed", desc: "Contenido dinámico", innerDesc: "Ejemplo de feed" }] }] };
+        async function loadSettings() {
+            try { const res = await fetch('/src/settings.json'); if(res.ok) settings = await res.json(); } catch(e) { console.log("usando settings por defecto"); }
+            document.title = settings.name || "ALYA NO GOHAN";
+            document.getElementById('apiName').innerHTML = settings.name;
+            document.getElementById('footerText').innerHTML = `🍚 Alya No Gohan · ${settings.apiSettings?.creator || 'Lyonn'} · Ac. Quinto Real`;
+            const topLinks = document.getElementById('topLinks');
+            if(settings.links) settings.links.forEach(link => { const a=document.createElement('a'); a.href=link.url; a.className='top-link'; a.target='_blank'; a.innerHTML=`<i class="fas fa-external-link-alt"></i> ${link.name}`; topLinks.appendChild(a); });
+            const catNav = document.getElementById('categoriesNav');
+            if(settings.categories) settings.categories.forEach(cat => { const div=document.createElement('div'); div.className='sidebar-item'; div.dataset.page='category'; div.dataset.category=cat.name; div.innerHTML=`<i class="fas fa-folder me-2"></i> ${cat.name}`; catNav.appendChild(div); });
+        }
+        function initUI() {
+            document.getElementById('menuToggle').addEventListener('click',()=>{ document.getElementById('menuToggle').classList.toggle('active'); document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); });
+            document.getElementById('sidebarOverlay').addEventListener('click',()=>{ document.getElementById('menuToggle').classList.remove('active'); document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); });
+            document.querySelectorAll('.sidebar-item').forEach(item => { item.addEventListener('click',()=>{ const page=item.dataset.page, cat=item.dataset.category; document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active')); item.classList.add('active'); if(page==='category') renderPageByRoute('category', cat); else renderPageByRoute(page); document.getElementById('menuToggle').classList.remove('active'); document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); }); });
+            window.addEventListener('scroll',()=>{ if(window.scrollY>0) document.querySelector('.top-bar').classList.add('scrolled'); else document.querySelector('.top-bar').classList.remove('scrolled'); });
+        }
+        function renderPageByRoute(page, category=null) {
+            const container = document.getElementById('mainContent');
+            if(page === 'home') {
+                container.innerHTML = `<div class="home-banner text-center"><img src="https://files.catbox.moe/osy7r9.jpg" alt="Alya" style="max-width: 60%; border-radius: 36px;"><h1 class="home-title mt-4">${settings.name}</h1><div class="home-version">${settings.version}</div><p class="mt-3 text-secondary">${settings.description || 'Documentación interactiva'}</p><i class="fas fa-music mt-3" style="color:#e11d48"></i><p class="mt-2">🎵 Sonido Quinto Real · Una vaina loca 🎵</p></div>`;
+            } else if(page === 'status') {
+                container.innerHTML = `<div class="text-center py-5"><div class="spinner-border"></div></div>`;
+                setTimeout(()=>{ container.innerHTML = `<h2><i class="fas fa-chart-line"></i> Status Online</h2><div class="row mt-4"><div class="col-md-4"><div class="status-card"><h5>API</h5><h3>🟢 Activa</h3></div></div><div class="col-md-4"><div class="status-card"><h5>Versión</h5><h3>${settings.version}</h3></div></div><div class="col-md-4"><div class="status-card"><h5>Quinto Real</h5><h3>🎧 Sonido Activo</h3></div></div></div>`; }, 300);
+            } else if(page === 'category' && category) {
+                const cat = settings.categories.find(c=>c.name===category);
+                if(!cat) return;
+                container.innerHTML = `<div class="search-box"><input type="text" class="search-input" placeholder="🔍 Filtrar endpoints..." id="searchInputCat"></div><h2 class="mb-4">📂 ${cat.name}</h2><div class="endpoints-grid" id="gridCat">${cat.items.map(i=>`<div class="endpoint-card" data-name="${i.name.toLowerCase()}"><div><b>${i.name}</b><div class="small text-secondary">${i.desc}</div></div><button class="endpoint-btn" data-path="${i.path}" data-name="${i.name}" data-desc="${i.desc}" data-inner-desc="${i.innerDesc||''}">GET →</button></div>`).join('')}</div>`;
+                document.getElementById('searchInputCat')?.addEventListener('input',(e)=>{ const val=e.target.value.toLowerCase(); document.querySelectorAll('#gridCat .endpoint-card').forEach(c=>{ const name=c.dataset.name; c.style.display=name.includes(val)?'':'none'; }); });
+                attachEndpointEvents();
+            } else if(page === 'all') {
+                container.innerHTML = `<div class="search-box"><input type="text" class="search-input" placeholder="🔍 Buscar endpoint..." id="searchAll"></div><div id="allCats"></div>`;
+                const allDiv = document.getElementById('allCats');
+                settings.categories.forEach(cat => { allDiv.innerHTML += `<div class="mt-4"><h3>${cat.name}</h3><div class="endpoints-grid">${cat.items.map(i=>`<div class="endpoint-card" data-name="${i.name.toLowerCase()}"><div><b>${i.name}</b><div class="small text-secondary">${i.desc}</div></div><button class="endpoint-btn" data-path="${i.path}" data-name="${i.name}" data-desc="${i.desc}" data-inner-desc="${i.innerDesc||''}">GET →</button></div>`).join('')}</div></div>`; });
+                document.getElementById('searchAll')?.addEventListener('input',(e)=>{ const term=e.target.value.toLowerCase(); document.querySelectorAll('.endpoint-card').forEach(c=>{ c.style.display=c.dataset.name.includes(term)?'':'none'; }); });
+                attachEndpointEvents();
+            }
+        }
+        function attachEndpointEvents() {
+            document.querySelectorAll('.endpoint-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ const path=btn.dataset.path, name=btn.dataset.name, desc=btn.dataset.desc, innerDesc=btn.dataset.innerDesc; openApiModal(path,name,desc,innerDesc); }); });
+        }
+        async function openApiModal(path, name, desc, innerDesc) {
+            const modal = new bootstrap.Modal(document.getElementById('apiModal'));
+            document.getElementById('modalTitle').innerText = name;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('endpointBox').style.display='block';
+            document.getElementById('endpointBox').innerHTML = `<code>${window.location.origin+path}</code>`;
+            document.getElementById('paramsContainer').innerHTML = '';
+            document.getElementById('responseContainer').innerHTML = '';
+            document.getElementById('submitBtn').style.display='none';
+            const urlParams = new URLSearchParams(path.split('?')[1] || '');
+            if([...urlParams.keys()].length) {
+                const paramsDiv = document.getElementById('paramsContainer');
+                [...urlParams.keys()].forEach(p=>{ const inp=document.createElement('input'); inp.placeholder=`${p}...`; inp.className='form-control mb-2'; inp.dataset.param=p; paramsDiv.appendChild(inp); });
+                if(innerDesc) paramsDiv.innerHTML+=`<div class="small text-muted mt-1"><i class="fas fa-info-circle"></i> ${innerDesc}</div>`;
+                const submit = document.getElementById('submitBtn');
+                submit.style.display='block';
+                submit.onclick = async()=>{
+                    const inputs = paramsDiv.querySelectorAll('input');
+                    let valid=true; const params=new URLSearchParams();
+                    inputs.forEach(i=>{ if(!i.value.trim()) valid=false; else params.append(i.dataset.param, i.value.trim()); });
+                    if(!valid) return alert("Completa todos los parámetros");
+                    const finalUrl = `${window.location.origin}${path.split('?')[0]}?${params.toString()}`;
+                    document.getElementById('loadingContainer').style.display='block';
+                    try{
+                        const res = await fetch(finalUrl);
+                        const contentType = res.headers.get('Content-Type');
+                        if(contentType?.startsWith('image/')){ const blob=await res.blob(); const img=document.createElement('img'); img.src=URL.createObjectURL(blob); img.className="w-100 mt-2 rounded"; document.getElementById('responseContainer').innerHTML=''; document.getElementById('responseContainer').appendChild(img); }
+                        else{ const json=await res.json(); document.getElementById('responseContainer').innerHTML=`<pre class="response-box">${JSON.stringify(json,null,2)}</pre>`; }
+                    }catch(e){ document.getElementById('responseContainer').innerHTML=`<pre class="text-danger">Error: ${e.message}</pre>`; }
+                    document.getElementById('loadingContainer').style.display='none';
+                };
+            } else { // sin params
+                document.getElementById('loadingContainer').style.display='block';
+                try {
+                    const res = await fetch(window.location.origin+path);
+                    const contentType = res.headers.get('Content-Type');
+                    if(contentType?.startsWith('image/')){ const blob=await res.blob(); const img=document.createElement('img'); img.src=URL.createObjectURL(blob); img.className="w-100 mt-2 rounded"; document.getElementById('responseContainer').appendChild(img); }
+                    else{ const json=await res.json(); document.getElementById('responseContainer').innerHTML=`<pre class="response-box">${JSON.stringify(json,null,2)}</pre>`; }
+                } catch(e){ document.getElementById('responseContainer').innerHTML=`<pre class="text-danger">Error fetch</pre>`; }
+                document.getElementById('loadingContainer').style.display='none';
+            }
+            modal.show();
+        }
+        async function start() {
+            await loadSettings();
+            initUI();
+            renderPageByRoute('home');
+            document.getElementById('loadingScreen').classList.add('fade-out');
+            setTimeout(()=>{ document.getElementById('loadingScreen').style.display='none'; }, 400);
+        }
+        start();
+    </script>
 </body>
 </html>
