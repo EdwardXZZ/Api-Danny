@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <link rel="icon" href="/src/icon.png" type="image/png">
-    <title id="pageTitle">Api Alya</title>
+    <title id="pageTitle">API Alya · Plataforma Profesional</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
@@ -17,8 +17,8 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            color: #1e293b;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #0f172a;
+            background: linear-gradient(145deg, #f1f5f9 0%, #eef2ff 100%);
             overflow-x: hidden;
         }
 
@@ -33,51 +33,71 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
             z-index: 10000;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         #loadingScreen.fade-out {
             opacity: 0;
         }
 
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            border: 3px solid #e2e8f0;
-            border-top-color: #e11d48;
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #f43f5e;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        /* Music Player Flotante */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* Music Player Flotante - Versión Premium */
         .music-player {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
+            bottom: 24px;
+            right: 24px;
+            width: 340px;
             background: rgba(15,23,42,0.95);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 15px;
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 16px;
             z-index: 10000;
-            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.35);
+            border: 1px solid rgba(244,63,94,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .music-player:hover {
+            border-color: #f43f5e;
+            transform: translateY(-2px);
         }
 
         .music-player.minimized {
-            width: 50px;
-            padding: 10px;
-            border-radius: 25px;
+            width: 56px;
+            padding: 12px;
+            border-radius: 28px;
         }
 
         .music-player.minimized .music-info,
         .music-player.minimized .music-controls,
-        .music-player.minimized .progress-container {
+        .music-player.minimized .progress-container,
+        .music-player.minimized .time-info {
             display: none;
         }
 
@@ -89,106 +109,119 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            color: white;
+            margin-bottom: 12px;
+            color: #f8fafc;
         }
 
         .music-title {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
         }
 
         .music-toggle-min {
-            background: none;
+            background: rgba(255,255,255,0.08);
             border: none;
-            color: white;
+            color: #f8fafc;
             cursor: pointer;
             font-size: 16px;
-            padding: 0 5px;
-            opacity: 0.7;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .music-toggle-min:hover {
+            background: #f43f5e;
+            transform: scale(1.05);
         }
 
         .music-info {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .song-name {
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 5px;
+            color: #f8fafc;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .artist-name {
-            color: rgba(255,255,255,0.6);
-            font-size: 10px;
+            color: rgba(248,250,252,0.6);
+            font-size: 11px;
         }
 
         .progress-container {
-            background: rgba(255,255,255,0.15);
-            border-radius: 10px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 20px;
             height: 4px;
-            margin: 10px 0;
+            margin: 12px 0;
             cursor: pointer;
         }
 
         .progress-bar {
-            background: #e11d48;
-            border-radius: 10px;
+            background: linear-gradient(90deg, #f43f5e, #fb923c);
+            border-radius: 20px;
             height: 100%;
             width: 0%;
-            position: relative;
-            transition: width 0.1s linear;
+            transition: width 0.05s linear;
         }
 
         .time-info {
             display: flex;
             justify-content: space-between;
-            color: rgba(255,255,255,0.5);
-            font-size: 10px;
-            margin-bottom: 10px;
+            color: rgba(248,250,252,0.5);
+            font-size: 9px;
+            margin-bottom: 12px;
         }
 
         .music-controls {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
         }
 
         .control-btn {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             border: none;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
+            transition: all 0.2s;
+            color: #f8fafc;
+            font-size: 14px;
         }
 
         .control-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.08);
         }
 
         .control-btn.play-btn {
-            background: #e11d48;
-            width: 45px;
-            height: 45px;
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            width: 48px;
+            height: 48px;
+            font-size: 18px;
         }
 
         .control-btn.play-btn:hover {
-            background: #be123c;
+            transform: scale(1.08);
+            box-shadow: 0 0 15px rgba(244,63,94,0.5);
         }
 
         /* Top Bar */
@@ -197,32 +230,32 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 60px;
-            background: rgba(255,255,255,0.95);
+            height: 64px;
+            background: rgba(255,255,255,0.98);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
+            padding: 0 28px;
             z-index: 1000;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
 
         .top-bar.scrolled {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
 
         .top-bar-left {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
 
         .menu-toggle {
-            width: 40px;
-            height: 40px;
-            background: none;
+            width: 44px;
+            height: 44px;
+            background: #f1f5f9;
             border: none;
             cursor: pointer;
             display: flex;
@@ -230,21 +263,20 @@
             justify-content: center;
             align-items: center;
             gap: 5px;
-            padding: 0;
-            transition: all 0.3s ease;
-            border-radius: 8px;
+            border-radius: 14px;
+            transition: all 0.2s;
         }
 
         .menu-toggle:hover {
-            background: #f1f5f9;
+            background: #e2e8f0;
         }
 
         .menu-toggle span {
             display: block;
-            width: 22px;
+            width: 20px;
             height: 2px;
             background: #1e293b;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             border-radius: 2px;
         }
 
@@ -257,43 +289,44 @@
         }
 
         .menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
+            transform: rotate(-45deg) translate(5px, -5px);
         }
 
         .api-name {
-            font-size: 18px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #e11d48, #f97316);
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f43f5e, #f97316);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: -0.3px;
         }
 
         .top-bar-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
 
         .top-links {
             display: flex;
-            gap: 20px;
+            gap: 24px;
             align-items: center;
         }
 
         .top-link {
             color: #475569;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
 
         .top-link:hover {
-            color: #e11d48;
+            color: #f43f5e;
         }
 
         .link-icon {
@@ -304,15 +337,15 @@
         /* Sidebar */
         .sidebar {
             position: fixed;
-            top: 60px;
-            left: -280px;
-            width: 280px;
-            height: calc(100vh - 60px);
+            top: 64px;
+            left: -300px;
+            width: 300px;
+            height: calc(100vh - 64px);
             background: rgba(255,255,255,0.98);
             backdrop-filter: blur(12px);
             border-right: 1px solid #e2e8f0;
             overflow-y: auto;
-            transition: left 0.3s ease;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 999;
         }
 
@@ -322,14 +355,14 @@
 
         .sidebar-overlay {
             position: fixed;
-            top: 60px;
+            top: 64px;
             left: 0;
             width: 100%;
-            height: calc(100vh - 60px);
-            background: rgba(0,0,0,0.3);
+            height: calc(100vh - 64px);
+            background: rgba(0,0,0,0.4);
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             z-index: 998;
         }
 
@@ -343,10 +376,10 @@
         }
 
         .sidebar-item {
-            padding: 12px 24px;
+            padding: 12px 28px;
             color: #334155;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
             border-left: 3px solid transparent;
             font-size: 14px;
             font-weight: 500;
@@ -354,29 +387,29 @@
 
         .sidebar-item:hover {
             background: #f8fafc;
-            color: #e11d48;
+            color: #f43f5e;
         }
 
         .sidebar-item.active {
             background: #fef2f2;
-            border-left-color: #e11d48;
-            color: #e11d48;
+            border-left-color: #f43f5e;
+            color: #f43f5e;
         }
 
         .sidebar-category {
-            padding: 20px 24px 8px;
+            padding: 20px 28px 8px;
             font-size: 11px;
             font-weight: 700;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         /* Main Content */
         .main-content {
-            margin-top: 60px;
-            padding: 40px 24px;
-            max-width: 1300px;
+            margin-top: 64px;
+            padding: 40px 32px;
+            max-width: 1400px;
             margin-left: auto;
             margin-right: auto;
             min-height: calc(100vh - 120px);
@@ -386,36 +419,49 @@
         .home-banner {
             text-align: center;
             padding: 60px 20px;
-            animation: fadeIn 0.6s ease;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .home-banner img {
             max-width: 100%;
             height: auto;
-            border-radius: 24px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.1);
+            border-radius: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.15);
         }
 
         .home-title {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #1e293b, #475569);
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #0f172a, #334155);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: -1px;
         }
 
         .home-version {
             display: inline-block;
-            background: #e11d48;
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
             color: #ffffff;
-            padding: 6px 16px;
-            border-radius: 40px;
+            padding: 6px 20px;
+            border-radius: 60px;
             font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 24px;
+            font-weight: 600;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 12px rgba(244,63,94,0.3);
         }
 
         .home-description {
@@ -425,6 +471,7 @@
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.6;
         }
 
         /* Status Page */
@@ -433,77 +480,78 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
             margin-top: 30px;
-            animation: fadeIn 0.6s ease;
+            animation: fadeInUp 0.6s ease;
         }
 
         .status-card {
-            background: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.85);
             backdrop-filter: blur(10px);
             border: 1px solid #e2e8f0;
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 24px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .status-card:hover {
             box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
             transform: translateY(-3px);
-            border-color: #e11d48;
+            border-color: #f43f5e;
         }
 
         .status-card-title {
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             margin-bottom: 12px;
         }
 
         .status-card-value {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1e293b;
+            font-size: 36px;
+            font-weight: 800;
+            color: #0f172a;
         }
 
         .status-card-small {
-            font-size: 13px;
+            font-size: 12px;
             color: #64748b;
-            margin-top: 5px;
+            margin-top: 6px;
         }
 
         /* Endpoints Page */
         .search-box {
-            margin-bottom: 32px;
-            animation: fadeIn 0.6s ease;
+            margin-bottom: 36px;
+            animation: fadeInUp 0.6s ease;
         }
 
         .search-input {
             width: 100%;
-            padding: 14px 20px;
+            padding: 14px 24px;
             border: 1px solid #e2e8f0;
             border-radius: 60px;
             font-size: 15px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             font-family: 'Inter', sans-serif;
             background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
 
         .search-input:focus {
             outline: none;
-            border-color: #e11d48;
-            box-shadow: 0 0 0 3px rgba(225,29,72,0.1);
+            border-color: #f43f5e;
+            box-shadow: 0 0 0 4px rgba(244,63,94,0.1);
         }
 
         .category-section {
-            margin-bottom: 48px;
-            animation: fadeIn 0.6s ease;
+            margin-bottom: 56px;
+            animation: fadeInUp 0.6s ease;
         }
 
         .category-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
-            color: #1e293b;
+            color: #0f172a;
             margin-bottom: 24px;
             padding-bottom: 12px;
             border-bottom: 2px solid #e2e8f0;
@@ -511,25 +559,26 @@
 
         .endpoints-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 20px;
         }
 
         .endpoint-card {
             background: white;
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
 
         .endpoint-card:hover {
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-            border-color: #e11d48;
+            box-shadow: 0 12px 28px -8px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            border-color: #f43f5e;
         }
 
         .endpoint-info {
@@ -540,7 +589,7 @@
         .endpoint-name {
             font-size: 16px;
             font-weight: 700;
-            color: #1e293b;
+            color: #0f172a;
             margin-bottom: 6px;
         }
 
@@ -553,87 +602,88 @@
         }
 
         .endpoint-btn {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #ffffff;
             border: none;
-            padding: 8px 20px;
+            padding: 10px 24px;
             border-radius: 40px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             white-space: nowrap;
             margin-left: 15px;
         }
 
         .endpoint-btn:hover {
-            background: linear-gradient(135deg, #e11d48, #be123c);
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
             transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(244,63,94,0.3);
         }
 
         /* Modal */
         .modal-content {
             border: none;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2);
+            border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             overflow: hidden;
         }
 
         .modal-header {
             border-bottom: 1px solid #e2e8f0;
-            padding: 20px 24px;
+            padding: 24px 28px;
             background: white;
         }
 
         .modal-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            color: #1e293b;
+            color: #0f172a;
         }
 
         .modal-desc {
             font-size: 13px;
             color: #64748b;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
         .modal-body {
-            padding: 24px;
+            padding: 28px;
         }
 
         .modal-footer {
             border-top: 1px solid #e2e8f0;
-            padding: 16px 24px;
+            padding: 20px 28px;
             background: #f8fafc;
         }
 
         .api-endpoint-box {
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 12px;
-            font-family: monospace;
-            font-size: 13px;
-            color: #e11d48;
+            background: #f1f5f9;
+            padding: 14px;
+            border-radius: 16px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            color: #f43f5e;
             word-break: break-all;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             border: 1px solid #e2e8f0;
         }
 
         .param-input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            border-radius: 16px;
             font-size: 14px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .param-input:focus {
             outline: none;
-            border-color: #e11d48;
-            box-shadow: 0 0 0 3px rgba(225,29,72,0.1);
+            border-color: #f43f5e;
+            box-shadow: 0 0 0 3px rgba(244,63,94,0.1);
         }
 
         .param-input.is-invalid {
@@ -644,71 +694,65 @@
             font-size: 12px;
             color: #64748b;
             margin-top: 8px;
-            line-height: 1.5;
+            line-height: 1.6;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
         }
 
         .submit-btn {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #ffffff;
             border: none;
-            padding: 10px 24px;
+            padding: 12px 28px;
             border-radius: 40px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .submit-btn:hover {
-            background: linear-gradient(135deg, #e11d48, #be123c);
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            transform: scale(1.02);
         }
 
         .submit-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
 
         .response-box {
-            background: #1e293b;
-            padding: 16px;
-            border-radius: 12px;
-            font-family: monospace;
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 16px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
             font-size: 12px;
-            color: #e2e8f0;
+            color: #a5f3c3;
             white-space: pre-wrap;
             word-wrap: break-word;
-            max-height: 400px;
+            max-height: 450px;
             overflow-y: auto;
-            margin-top: 20px;
+            margin-top: 24px;
         }
 
         .response-image {
             max-width: 100%;
             height: auto;
-            border-radius: 8px;
-            margin-top: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
         /* Footer */
         .footer {
             text-align: center;
-            padding: 30px 20px;
+            padding: 32px 20px;
             color: #94a3b8;
             font-size: 13px;
             border-top: 1px solid #e2e8f0;
             margin-top: 40px;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         /* Responsive */
@@ -722,7 +766,7 @@
             }
 
             .home-description {
-                font-size: 15px;
+                font-size: 14px;
             }
 
             .endpoints-grid {
@@ -734,9 +778,9 @@
             }
 
             .music-player {
-                width: 280px;
-                bottom: 10px;
-                right: 10px;
+                width: 300px;
+                bottom: 16px;
+                right: 16px;
             }
         }
     </style>
@@ -744,16 +788,14 @@
 <body>
     <!-- Loading Screen -->
     <div id="loadingScreen">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <p style="margin-top: 16px; color: #64748b;">Loading...</p>
+        <div class="loader"></div>
+        <p class="loading-text">CARGANDO PLATAFORMA</p>
     </div>
 
-    <!-- Reproductor de Música Flotante -->
+    <!-- Reproductor de Música Flotante Premium -->
     <div class="music-player" id="musicPlayer">
         <div class="music-header">
-            <span class="music-title">🎵 MUSIC PLAYER</span>
+            <span class="music-title"><i class="fas fa-headphones me-1"></i> LYONN RADIO</span>
             <button class="music-toggle-min" id="toggleMinimize">−</button>
         </div>
         <div class="music-info">
@@ -768,9 +810,9 @@
             <span id="duration">0:00</span>
         </div>
         <div class="music-controls">
-            <button class="control-btn" id="prevBtn">⏮</button>
-            <button class="control-btn play-btn" id="playPauseBtn">▶</button>
-            <button class="control-btn" id="nextBtn">⏭</button>
+            <button class="control-btn" id="prevBtn"><i class="fas fa-backward"></i></button>
+            <button class="control-btn play-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
+            <button class="control-btn" id="nextBtn"><i class="fas fa-forward"></i></button>
         </div>
     </div>
 
@@ -795,11 +837,11 @@
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-nav">
-            <div class="sidebar-item active" data-page="home">Home</div>
-            <div class="sidebar-item" data-page="status">Status</div>
-            <div class="sidebar-category">Categories</div>
+            <div class="sidebar-item active" data-page="home"><i class="fas fa-home me-2"></i> Inicio</div>
+            <div class="sidebar-item" data-page="status"><i class="fas fa-chart-line me-2"></i> Estado</div>
+            <div class="sidebar-category"><i class="fas fa-tag me-2"></i> Categorías</div>
             <div id="categoriesNav"></div>
-            <div class="sidebar-item" data-page="all">All Endpoints</div>
+            <div class="sidebar-item" data-page="all"><i class="fas fa-cubes me-2"></i> Todos los Endpoints</div>
         </div>
     </div>
 
@@ -826,12 +868,12 @@
                     <div class="api-endpoint-box" id="endpointBox" style="display: none;"></div>
                     <div id="paramsContainer"></div>
                     <div id="loadingContainer" style="display: none; text-align: center; padding: 40px;">
-                        <div class="spinner-border" role="status"></div>
+                        <div class="loader" style="width: 40px; height: 40px;"></div>
                     </div>
                     <div id="responseContainer"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="submit-btn" id="submitBtn" style="display: none;">Submit</button>
+                    <button class="submit-btn" id="submitBtn" style="display: none;"><i class="fas fa-paper-plane me-2"></i> Ejecutar</button>
                 </div>
             </div>
         </div>
@@ -839,7 +881,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ============ REPRODUCTOR DE MÚSICA ============
+        // ============ REPRODUCTOR DE MÚSICA PREMIUM ============
         const playlist = [
             { name: "Latin Lover", artist: "Neutro Shorty, Big Soto", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936364197.mpeg" },
             { name: "El La Engaño Lambada", artist: "Natusha", url: "https://raw.githubusercontent.com/JTxs00/uploads/main/1775936787983.mpeg" },
@@ -881,10 +923,11 @@
         }
 
         function updatePlayPauseIcon() {
+            const icon = playPauseBtn.querySelector('i');
             if (isPlaying) {
-                playPauseBtn.innerHTML = '⏸';
+                icon.className = 'fas fa-pause';
             } else {
-                playPauseBtn.innerHTML = '▶';
+                icon.className = 'fas fa-play';
             }
         }
 
@@ -940,10 +983,10 @@
             isMinimized = !isMinimized;
             if (isMinimized) {
                 musicPlayer.classList.add('minimized');
-                toggleMinimize.textContent = '+';
+                toggleMinimize.innerHTML = '+';
             } else {
                 musicPlayer.classList.remove('minimized');
-                toggleMinimize.textContent = '−';
+                toggleMinimize.innerHTML = '−';
             }
         }
 
@@ -955,7 +998,6 @@
         progressContainer.addEventListener('click', setProgress);
         toggleMinimize.addEventListener('click', toggleMinimizePlayer);
 
-        // Cargar primera canción
         loadSong(0);
 
         // ============ API DASHBOARD ORIGINAL ============
@@ -974,11 +1016,10 @@
                 const response = await fetch('/src/settings.json');
                 settings = await response.json();
 
-                document.getElementById('pageTitle').textContent = settings.name || 'API';
-                document.getElementById('apiName').textContent = settings.name || 'API';
-                document.getElementById('footerText').textContent = `Created by ${settings.apiSettings?.creator || 'Unknown'}`;
+                document.getElementById('pageTitle').textContent = settings.name || 'API Alya';
+                document.getElementById('apiName').textContent = settings.name || 'API Alya';
+                document.getElementById('footerText').innerHTML = `<i class="fas fa-crown me-1"></i> Creado por ${settings.apiSettings?.creator || 'Lyonn'} <i class="fas fa-crown ms-1"></i>`;
 
-                // Top links
                 const topLinksContainer = document.getElementById('topLinks');
                 if (settings.links && settings.links.length > 0) {
                     settings.links.forEach(link => {
@@ -997,7 +1038,6 @@
                     });
                 }
 
-                // Categories navigation
                 const categoriesNav = document.getElementById('categoriesNav');
                 if (settings.categories) {
                     settings.categories.forEach(category => {
@@ -1005,7 +1045,7 @@
                         item.className = 'sidebar-item';
                         item.dataset.page = 'category';
                         item.dataset.category = category.name;
-                        item.textContent = category.name;
+                        item.innerHTML = `<i class="fas fa-folder me-2"></i> ${category.name}`;
                         categoriesNav.appendChild(item);
                     });
                 }
@@ -1015,7 +1055,6 @@
         }
 
         function initializeUI() {
-            // Menu toggle
             const menuToggle = document.getElementById('menuToggle');
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -1032,7 +1071,6 @@
                 overlay.classList.remove('active');
             });
 
-            // Sidebar navigation
             document.querySelectorAll('.sidebar-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const page = item.dataset.page;
@@ -1053,7 +1091,6 @@
                 });
             });
 
-            // Scroll effect
             window.addEventListener('scroll', () => {
                 const topBar = document.querySelector('.top-bar');
                 if (window.scrollY > 0) {
@@ -1092,78 +1129,39 @@
             container.innerHTML = `
                 <div class="home-banner">
                     ${imageSrc ? `<img src="${imageSrc}" alt="${settings.name}" style="max-width: ${settings.header.imageSize?.desktop || '40%'}">` : ''}
-                    <h1 class="home-title">${settings.name || 'API'}</h1>
+                    <h1 class="home-title">${settings.name || 'API Alya'}</h1>
                     <div class="home-version">${settings.version || 'v1.0'}</div>
-                    <p class="home-description">${settings.description || 'API Documentation'}</p>
+                    <p class="home-description">${settings.description || 'Documentación profesional de API'}</p>
                 </div>
             `;
         }
 
         async function renderStatusPage(container) {
-            container.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner-border"></div></div>';
+            container.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="loader" style="width: 40px; height: 40px;"></div></div>';
 
             try {
                 const response = await fetch('/status');
                 const data = await response.json();
 
                 container.innerHTML = `
-                    <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px;">API Status</h2>
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 32px;"><i class="fas fa-chart-line me-2"></i> Estado del API</h2>
                     <div class="status-grid">
-                        <div class="status-card">
-                            <div class="status-card-title">Status</div>
-                            <div class="status-card-value" style="color: #28a745;">Online</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Version</div>
-                            <div class="status-card-value">${settings.version || 'N/A'}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Total Requests</div>
-                            <div class="status-card-value">${data.total_requests || 0}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Active Users</div>
-                            <div class="status-card-value">${data.active_users || 0}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Daily Limit</div>
-                            <div class="status-card-value">${data.daily_limit || 'N/A'}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Routes Loaded</div>
-                            <div class="status-card-value">${data.routes_loaded || 0}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Uptime</div>
-                            <div class="status-card-value">${formatUptime(data.uptime_seconds)}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">API Latency</div>
-                            <div class="status-card-value">${data.api_latency_ms || 0}ms</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">CPU Cores</div>
-                            <div class="status-card-value">${data.system?.cores || 'N/A'}</div>
-                            <div class="status-card-small">${data.system?.cpu_model || ''}</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">CPU Load</div>
-                            <div class="status-card-value">${data.system?.cpu_load_percent || 0}%</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">RAM Usage</div>
-                            <div class="status-card-value">${data.system?.ram_used_gb || 0} GB</div>
-                            <div class="status-card-small">of ${data.system?.ram_total_gb || 0} GB</div>
-                        </div>
-                        <div class="status-card">
-                            <div class="status-card-title">Disk Usage</div>
-                            <div class="status-card-value">${data.system?.disk_used_gb || 0} GB</div>
-                            <div class="status-card-small">of ${data.system?.disk_total_gb || 0} GB</div>
-                        </div>
+                        <div class="status-card"><div class="status-card-title">Estado</div><div class="status-card-value" style="color: #10b981;">Online</div></div>
+                        <div class="status-card"><div class="status-card-title">Versión</div><div class="status-card-value">${settings.version || 'N/A'}</div></div>
+                        <div class="status-card"><div class="status-card-title">Peticiones Totales</div><div class="status-card-value">${data.total_requests || 0}</div></div>
+                        <div class="status-card"><div class="status-card-title">Usuarios Activos</div><div class="status-card-value">${data.active_users || 0}</div></div>
+                        <div class="status-card"><div class="status-card-title">Límite Diario</div><div class="status-card-value">${data.daily_limit || 'N/A'}</div></div>
+                        <div class="status-card"><div class="status-card-title">Rutas Cargadas</div><div class="status-card-value">${data.routes_loaded || 0}</div></div>
+                        <div class="status-card"><div class="status-card-title">Tiempo Activo</div><div class="status-card-value">${formatUptime(data.uptime_seconds)}</div></div>
+                        <div class="status-card"><div class="status-card-title">Latencia</div><div class="status-card-value">${data.api_latency_ms || 0}ms</div></div>
+                        <div class="status-card"><div class="status-card-title">CPU Núcleos</div><div class="status-card-value">${data.system?.cores || 'N/A'}</div><div class="status-card-small">${data.system?.cpu_model || ''}</div></div>
+                        <div class="status-card"><div class="status-card-title">CPU</div><div class="status-card-value">${data.system?.cpu_load_percent || 0}%</div></div>
+                        <div class="status-card"><div class="status-card-title">RAM</div><div class="status-card-value">${data.system?.ram_used_gb || 0} GB</div><div class="status-card-small">de ${data.system?.ram_total_gb || 0} GB</div></div>
+                        <div class="status-card"><div class="status-card-title">Disco</div><div class="status-card-value">${data.system?.disk_used_gb || 0} GB</div><div class="status-card-small">de ${data.system?.disk_total_gb || 0} GB</div></div>
                     </div>
                 `;
             } catch (error) {
-                container.innerHTML = '<p style="text-align: center; color: #dc3545;">Failed to load status</p>';
+                container.innerHTML = '<p style="text-align: center; color: #dc3545;">Error al cargar el estado</p>';
             }
         }
 
@@ -1175,10 +1173,10 @@
 
             container.innerHTML = `
                 <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Search endpoints..." id="searchInput">
+                    <input type="text" class="search-input" placeholder="🔍 Buscar endpoints..." id="searchInput">
                 </div>
                 <div class="category-section">
-                    <h2 class="category-title">${category.name}</h2>
+                    <h2 class="category-title"><i class="fas fa-folder-open me-2"></i> ${category.name}</h2>
                     <div class="endpoints-grid" id="endpointsGrid">
                         ${sortedItems.map(item => createEndpointCard(item)).join('')}
                     </div>
@@ -1192,7 +1190,7 @@
         function renderAllEndpoints(container) {
             container.innerHTML = `
                 <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Search endpoints..." id="searchInput">
+                    <input type="text" class="search-input" placeholder="🔍 Buscar endpoints..." id="searchInput">
                 </div>
                 <div id="allCategories"></div>
             `;
@@ -1203,7 +1201,7 @@
 
                 allCategories.innerHTML += `
                     <div class="category-section" data-category="${category.name}">
-                        <h2 class="category-title">${category.name}</h2>
+                        <h2 class="category-title"><i class="fas fa-cube me-2"></i> ${category.name}</h2>
                         <div class="endpoints-grid">
                             ${sortedItems.map(item => createEndpointCard(item)).join('')}
                         </div>
@@ -1219,11 +1217,11 @@
             return `
                 <div class="endpoint-card" data-name="${item.name.toLowerCase()}" data-desc="${item.desc.toLowerCase()}">
                     <div class="endpoint-info">
-                        <div class="endpoint-name">${item.name}</div>
+                        <div class="endpoint-name"><i class="fas fa-code me-2"></i> ${item.name}</div>
                         <div class="endpoint-desc">${item.desc}</div>
                     </div>
                     <button class="endpoint-btn" data-path="${item.path}" data-name="${item.name}" data-desc="${item.desc}" data-inner-desc="${item.innerDesc || ''}">
-                        GET
+                        GET <i class="fas fa-arrow-right ms-1"></i>
                     </button>
                 </div>
             `;
@@ -1287,7 +1285,7 @@
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.className = 'param-input';
-                    input.placeholder = `Enter ${param}...`;
+                    input.placeholder = `Ingresa ${param}...`;
                     input.dataset.param = param;
                     input.required = true;
                     paramsContainer.appendChild(input);
@@ -1296,7 +1294,7 @@
                 if (innerDesc) {
                     const descDiv = document.createElement('div');
                     descDiv.className = 'inner-desc';
-                    descDiv.innerHTML = innerDesc.replace(/\n/g, '<br>');
+                    descDiv.innerHTML = `<i class="fas fa-info-circle me-1"></i> ${innerDesc.replace(/\n/g, '<br>')}`;
                     paramsContainer.appendChild(descDiv);
                 }
 
@@ -1379,7 +1377,7 @@
                 const pre = document.createElement('pre');
                 pre.className = 'response-box';
                 pre.textContent = `Error: ${error.message}`;
-                pre.style.color = '#dc3545';
+                pre.style.color = '#f87171';
                 responseContainer.appendChild(pre);
             } finally {
                 loadingContainer.style.display = 'none';
@@ -1388,11 +1386,9 @@
 
         function formatUptime(seconds) {
             if (!seconds) return 'N/A';
-
             const days = Math.floor(seconds / 86400);
             const hours = Math.floor((seconds % 86400) / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
-
             if (days > 0) return `${days}d ${hours}h`;
             if (hours > 0) return `${hours}h ${minutes}m`;
             return `${minutes}m`;
@@ -1404,7 +1400,7 @@
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
                 document.body.classList.remove('no-scroll');
-            }, 500);
+            }, 600);
         }
     </script>
 </body>
