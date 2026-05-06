@@ -68,6 +68,12 @@
           "desc": "Search videos on TikTok",
           "path": "/search/tiktok?query=",
           "innerDesc": "🎵 Search videos on TikTok\n\nParameters:\n• query - Search term\n• limit - Results count (1-30, default: 10)\n\nExample: /search/tiktok?query=badbunny&limit=5"
+        },
+        {
+          "name": "Facebook Search",
+          "desc": "Search public posts on Facebook",
+          "path": "/search/facebook?q=",
+          "innerDesc": "🔍 Busca publicaciones públicas en Facebook\n\nParámetros:\n• q - Término de búsqueda\n• limit - Cantidad de resultados (1-100)\n\nEjemplo: /search/facebook?q=BadBunny&limit=5"
         }
       ]
     },
@@ -116,12 +122,6 @@
       "name": "🛠️ Tools",
       "items": [
         {
-          "name": "Image HD Enhancer",
-          "desc": "Enhance image quality to HD using AI",
-          "path": "/tools/image-hd",
-          "innerDesc": "🖼️ Mejora la calidad de tus imágenes a HD con IA\n\nMétodo: POST\nFormato: multipart/form-data\nParámetro: image (el archivo)\nLímite: 10MB\nFormatos: JPG, PNG, WEBP\n\nEjemplo:\ncurl -X POST -F \"image=@foto.jpg\" /tools/image-hd"
-        },
-        {
           "name": "Traductor",
           "desc": "Translate text to any language",
           "path": "/translate?text=",
@@ -132,12 +132,6 @@
           "desc": "Shorten long URLs using TinyURL",
           "path": "/shorten?url=",
           "innerDesc": "🔗 Acorta enlaces largos\n\nUsage: ?url=LONG_URL\n\nExample: /shorten?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        },
-        {
-          "name": "Audio",
-          "desc": "Get a special audio from Alya",
-          "path": "/tools/lyonn",
-          "innerDesc": "🎵 Reproduce un audio especial de Alya\n\nUsage: /audio/lyonn\nDownload: /audio/lyonn?download=true"
         }
       ]
     }
